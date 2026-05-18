@@ -1,0 +1,25 @@
+{
+  "name": "Tu tập - Practice",
+  "short_name": "Tu Tập",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4ede0",
+  "theme_color": "#1a1814",
+  "description": "App cho người tu tập",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
