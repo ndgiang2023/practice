@@ -3074,32 +3074,42 @@ const SpeechManager = {
 
     if (errorHint) errorHint.classList.remove('show');
 
+    // Track all final-result indices we've committed to avoid double-appending.
+    // Interim results are NEVER written to the field — they only appear in the
+    // preview hint. This prevents Chrome's quirky re-firings and cumulative
+    // transcripts from causing duplication.
+    const committedIndices = new Set();
+
     rec.onresult = (event) => {
-      // Rebuild from scratch each event — event.results contains the full
-      // running list of all results in this session, and browsers may
-      // re-fire previous final results. Accumulating with += causes duplication.
-      let finalTranscript = '';
       let interim = '';
+      // Find the most-recent interim chunk (some browsers fire multiple)
       for (let i = 0; i < event.results.length; i++) {
         const result = event.results[i];
         const text = result[0].transcript;
-        if (result.isFinal) finalTranscript += text + ' ';
-        else interim += text;
+        if (result.isFinal) {
+          if (!committedIndices.has(i)) {
+            committedIndices.add(i);
+            // Append this final chunk to baseValue
+            this.baseValue = this.composeText(this.baseValue, text.trim());
+          }
+        } else {
+          // Take latest interim (overwrite as we go through indices)
+          interim = text;
+        }
       }
-      const finalText = finalTranscript.trim();
-      const composed = this.composeText(this.baseValue, finalText);
-      // Show interim hint as live preview (do not commit to value)
+      // Update interim hint
       if (interim) {
         if (interimHint) {
-          interimHint.textContent = '… ' + interim;
+          interimHint.textContent = '… ' + interim.trim();
           interimHint.classList.add('show');
         }
       } else if (interimHint) {
         interimHint.classList.remove('show');
       }
-      // Update field with current final transcript
-      fieldEl.value = composed;
-      // Fire input event so any listeners react
+      // The field always shows the committed base value only.
+      // Interim is just a preview in the hint, never in the field.
+      // This is the only way to be safe against Chrome's quirky re-firing.
+      fieldEl.value = this.baseValue;
       fieldEl.dispatchEvent(new Event('input', { bubbles: true }));
     };
 
@@ -3168,8 +3178,35 @@ const SpeechManager = {
   composeText(base, finalText) {
     if (!finalText) return base;
     if (!base) return this.capitalize(finalText);
-    const needsSpace = !/\s$/.test(base) && !/^[\s,.!?;:]/.test(finalText);
-    return base + (needsSpace ? ' ' : '') + finalText;
+    // Strip overlap: if finalText starts with the tail of base, drop the overlap.
+    // Handles Chrome Android's quirk where each new result's transcript may
+    // contain the entire utterance, not just the newest chunk.
+    const stripped = this.stripOverlap(base, finalText);
+    if (!stripped) return base;
+    const needsSpace = !/\s$/.test(base) && !/^[\s,.!?;:]/.test(stripped);
+    return base + (needsSpace ? ' ' : '') + stripped;
+  },
+
+  stripOverlap(base, addition) {
+    // Find longest suffix of base that is a prefix of addition
+    const baseLower = base.toLowerCase().trim();
+    const addLower = addition.toLowerCase().trim();
+    // Try progressively longer suffixes of base, see if addition starts with them
+    const maxLen = Math.min(baseLower.length, addLower.length);
+    let bestOverlap = 0;
+    for (let len = maxLen; len > 0; len--) {
+      const suffix = baseLower.slice(-len);
+      if (addLower.startsWith(suffix)) {
+        bestOverlap = len;
+        break;
+      }
+    }
+    // Also handle the case where addition equals the entire base
+    if (addLower === baseLower) return '';
+    if (addLower.startsWith(baseLower)) {
+      return addition.slice(base.length).trim();
+    }
+    return addition.slice(bestOverlap).trim();
   },
 
   capitalize(s) {
