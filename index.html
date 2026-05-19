@@ -1006,6 +1006,16 @@ main {
     <input type="file" id="import-file" accept=".json" style="display:none;">
   </div>
 
+  <div class="divider-deco">· ◇ ·</div>
+
+  <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:6px;" data-vi="Ứng dụng" data-en="Application">Ứng dụng</h3>
+  <div style="font-size:13px;color:var(--ink-faint);margin-bottom:10px;font-style:italic;" data-vi="Tải lại để cập nhật phiên bản mới nhất từ máy chủ" data-en="Reload to fetch the latest version from the server">Tải lại để cập nhật phiên bản mới nhất từ máy chủ</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-ghost btn-small" id="refresh-app" data-vi="↻ Tải lại ứng dụng" data-en="↻ Reload app">↻ Tải lại ứng dụng</button>
+    <button class="btn btn-ghost btn-small" id="hard-refresh-app" data-vi="↻ Tải lại sạch" data-en="↻ Hard reload">↻ Tải lại sạch</button>
+  </div>
+  <div id="app-version-info" style="margin-top:10px;font-size:12px;color:var(--ink-faint);font-style:italic;"></div>
+
   <div style="margin-top:30px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--ink-faint);font-size:13px;">
     <div style="font-size:20px;color:var(--gold-soft);margin-bottom:4px;">∾</div>
     <span data-vi="Tinh tấn không ngừng" data-en="Diligence without ceasing">Tinh tấn không ngừng</span>
@@ -2134,6 +2144,51 @@ document.getElementById('import-file').onchange = (e) => {
   };
   reader.readAsText(file);
 };
+
+/* ============================================================
+   REFRESH APP
+============================================================ */
+// Soft refresh - reload page (uses cache if available)
+document.getElementById('refresh-app').onclick = () => {
+  showToast(t('Đang tải lại…','Reloading…'));
+  setTimeout(() => location.reload(), 300);
+};
+
+// Hard refresh - clear service worker cache + unregister SW, then reload
+document.getElementById('hard-refresh-app').onclick = async () => {
+  if (!confirm(t(
+    'Tải lại sạch sẽ xoá bộ nhớ đệm để lấy phiên bản mới nhất. Dữ liệu của bạn KHÔNG bị mất. Tiếp tục?',
+    'Hard reload will clear the cache to fetch the latest version. Your data will NOT be lost. Continue?'
+  ))) return;
+  showToast(t('Đang xoá bộ nhớ đệm…','Clearing cache…'));
+  try {
+    // Clear all caches
+    if ('caches' in window) {
+      const names = await caches.keys();
+      await Promise.all(names.map(n => caches.delete(n)));
+    }
+    // Unregister all service workers
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    }
+  } catch(e) {
+    console.warn('cache clear error', e);
+  }
+  // Bypass HTTP cache on reload by appending timestamp
+  const url = new URL(location.href);
+  url.searchParams.set('_r', Date.now());
+  setTimeout(() => { location.replace(url.toString()); }, 400);
+};
+
+// Show last loaded timestamp so user knows if reload worked
+(function showVersionInfo() {
+  const el = document.getElementById('app-version-info');
+  if (!el) return;
+  const now = new Date();
+  const stamp = now.toLocaleString(state.lang === 'vi' ? 'vi-VN' : 'en-US');
+  el.textContent = t('Đã tải lúc: ', 'Loaded at: ') + stamp;
+})();
 
 /* ============================================================
    INIT
