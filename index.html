@@ -3074,11 +3074,13 @@ const SpeechManager = {
 
     if (errorHint) errorHint.classList.remove('show');
 
-    let finalTranscript = '';
-
     rec.onresult = (event) => {
+      // Rebuild from scratch each event — event.results contains the full
+      // running list of all results in this session, and browsers may
+      // re-fire previous final results. Accumulating with += causes duplication.
+      let finalTranscript = '';
       let interim = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
+      for (let i = 0; i < event.results.length; i++) {
         const result = event.results[i];
         const text = result[0].transcript;
         if (result.isFinal) finalTranscript += text + ' ';
