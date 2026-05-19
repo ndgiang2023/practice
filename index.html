@@ -56,8 +56,9 @@ body::before {
 }
 
 header {
-  position: relative;
-  z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 30;
   padding: 22px 20px 14px;
   border-bottom: 1px solid var(--line);
   display: flex;
@@ -585,25 +586,25 @@ main {
 }
 
 .dropdown {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: 64px;
   right: 14px;
-  margin-top: 6px;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 3px;
   box-shadow: 0 8px 24px rgba(26,24,20,0.18), 0 2px 6px rgba(26,24,20,0.08);
   min-width: 200px;
-  z-index: 60;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-6px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 100;
+  display: none;
+  flex-direction: column;
 }
 .dropdown.open {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+  display: flex;
+  animation: dropdownIn 0.18s ease;
+}
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .dropdown-item {
   display: flex;
@@ -833,17 +834,18 @@ main {
       <button id="lang-en">EN</button>
     </div>
   </div>
-  <div class="dropdown" id="header-dropdown">
-    <button class="dropdown-item" data-menu-view="notes">
-      <span class="icon">❋</span>
-      <span data-vi="Ghi chú" data-en="Notes">Ghi chú</span>
-    </button>
-    <button class="dropdown-item" data-menu-view="settings">
-      <span class="icon">⚙</span>
-      <span data-vi="Cài đặt" data-en="Settings">Cài đặt</span>
-    </button>
-  </div>
 </header>
+
+<div class="dropdown" id="header-dropdown">
+  <button class="dropdown-item" data-menu-view="notes">
+    <span class="icon">❋</span>
+    <span data-vi="Ghi chú" data-en="Notes">Ghi chú</span>
+  </button>
+  <button class="dropdown-item" data-menu-view="settings">
+    <span class="icon">⚙</span>
+    <span data-vi="Cài đặt" data-en="Settings">Cài đặt</span>
+  </button>
+</div>
 
 <main>
 
@@ -1286,22 +1288,32 @@ let currentView = 'dashboard';
 const dropdown = document.getElementById('header-dropdown');
 const menuBtn = document.getElementById('menu-btn');
 
-menuBtn.onclick = (e) => {
-  e.stopPropagation();
-  dropdown.classList.toggle('open');
-};
+function toggleDropdown(forceOpen) {
+  if (forceOpen === true) dropdown.classList.add('open');
+  else if (forceOpen === false) dropdown.classList.remove('open');
+  else dropdown.classList.toggle('open');
+}
 
+menuBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleDropdown();
+});
+
+// Close dropdown when clicking elsewhere - but ignore clicks on the button or inside dropdown
 document.addEventListener('click', (e) => {
-  if (!dropdown.contains(e.target) && e.target !== menuBtn) {
-    dropdown.classList.remove('open');
-  }
+  if (!dropdown.classList.contains('open')) return;
+  if (menuBtn.contains(e.target)) return;
+  if (dropdown.contains(e.target)) return;
+  toggleDropdown(false);
 });
 
 document.querySelectorAll('.dropdown-item').forEach(item => {
-  item.onclick = () => {
-    dropdown.classList.remove('open');
+  item.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown(false);
     switchView(item.dataset.menuView);
-  };
+  });
 });
 
 /* ============================================================
