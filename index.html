@@ -1007,6 +1007,123 @@ main {
   transition: transform 0.15s;
 }
 .undo-restore-btn:active { transform: scale(0.96); }
+
+/* ============ MIC / SPEECH RECOGNITION ============ */
+.mic-field {
+  position: relative;
+}
+.mic-field .mic-controls {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+.mic-field input,
+.mic-field textarea {
+  padding-right: 78px;  /* leave room for mic + lang chip */
+}
+.mic-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.85);
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.15s;
+}
+.mic-btn:active { transform: scale(0.9); }
+.mic-btn.listening {
+  background: var(--vermillion);
+  border-color: var(--vermillion);
+  color: var(--paper);
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(156,58,46,0.5); }
+  50%      { box-shadow: 0 0 0 8px rgba(156,58,46,0); }
+}
+.mic-btn svg { width: 14px; height: 14px; display: block; }
+.mic-lang {
+  height: 30px;
+  min-width: 38px;
+  padding: 0 6px;
+  border-radius: 15px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.85);
+  color: var(--ink-faint);
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.mic-lang:active { transform: scale(0.92); }
+.mic-lang.open { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.mic-lang-popover {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 6px 18px rgba(26,24,20,0.18);
+  z-index: 3;
+  display: none;
+  flex-direction: column;
+  min-width: 130px;
+  overflow: hidden;
+}
+.mic-lang-popover.open { display: flex; }
+.mic-lang-popover button {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(196,181,154,0.4);
+}
+.mic-lang-popover button:last-child { border-bottom: none; }
+.mic-lang-popover button:active { background: var(--paper-deep); }
+.mic-lang-popover button.active {
+  background: rgba(160,124,58,0.1);
+  color: var(--vermillion);
+  font-weight: 600;
+}
+.mic-interim-hint {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--vermillion);
+  margin-top: 4px;
+  display: none;
+  letter-spacing: 0.3px;
+}
+.mic-interim-hint.show { display: block; }
+.mic-error-hint {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--vermillion);
+  margin-top: 4px;
+  display: none;
+}
+.mic-error-hint.show { display: block; }
 </style>
 </head>
 <body>
@@ -1425,7 +1542,7 @@ const defaultUnits = {
 
 let state = {
   lang: 'vi',
-  settings: { leadMinutes: 5, vibrate: true, bell: true, bellSound: 'bowlLarge' },
+  settings: { leadMinutes: 5, vibrate: true, bell: true, bellSound: 'bowlLarge', speechLang: 'vi-VN' },
   customUnits: [],
   schedules: [],   // {id, name, from, to, repeat, lastNotified}
   practices: [],   // {id, name, desc, target, unit, createdAt, log: {dateStr: amount}}
@@ -1452,6 +1569,7 @@ function load() {
       if (state.settings.leadMinutes === undefined) state.settings.leadMinutes = 5;
       if (state.settings.vibrate === undefined) state.settings.vibrate = true;
       if (state.settings.bell === undefined) state.settings.bell = true;
+      if (state.settings.speechLang === undefined) state.settings.speechLang = 'vi-VN';
     } catch(e){}
   }
 }
@@ -1579,6 +1697,10 @@ function openModal(id, edit=null) {
 function closeModal(id) {
   document.getElementById(id).classList.remove('active');
   editingId = null;
+  // Stop any active mic when modal closes
+  if (typeof SpeechManager !== 'undefined' && SpeechManager.isListening && SpeechManager.isListening()) {
+    SpeechManager.stop();
+  }
 }
 
 function clearModal(id) {
@@ -2904,12 +3026,305 @@ document.getElementById('hard-refresh-app').onclick = async () => {
 })();
 
 /* ============================================================
+   SPEECH RECOGNITION (mic input for text fields)
+============================================================ */
+const SPEECH_LANGS = [
+  { code: 'vi-VN', label: 'VI', vi: 'Tiếng Việt',   en: 'Vietnamese' },
+  { code: 'en-US', label: 'EN', vi: 'Tiếng Anh',    en: 'English' },
+  { code: 'ko-KR', label: 'KO', vi: 'Tiếng Hàn',    en: 'Korean' },
+  { code: 'zh-CN', label: 'ZH', vi: 'Tiếng Trung',  en: 'Chinese' }
+];
+
+function isSpeechSupported() {
+  return 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
+}
+
+/* Single global SpeechManager — only one recognition session at a time */
+const SpeechManager = {
+  recognition: null,
+  activeFieldId: null,
+  baseValue: '',           // input value before this session started
+  interimHint: null,       // hint element for current field
+  errorHint: null,
+  micBtn: null,
+
+  isListening() { return !!this.recognition; },
+
+  start(fieldEl, micBtn, interimHint, errorHint) {
+    if (!isSpeechSupported()) {
+      this.showError(errorHint, t('Trình duyệt không hỗ trợ giọng nói','Browser does not support speech'));
+      return;
+    }
+    // Stop any existing session
+    if (this.recognition) this.stop();
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SR();
+    rec.continuous = true;       // keep listening across pauses
+    rec.interimResults = true;   // show partial results live
+    rec.lang = state.settings.speechLang || 'vi-VN';
+    rec.maxAlternatives = 1;
+
+    this.recognition = rec;
+    this.activeFieldId = fieldEl.id || (fieldEl.id = 'fld_' + uid());
+    this.baseValue = fieldEl.value || '';
+    this.interimHint = interimHint;
+    this.errorHint = errorHint;
+    this.micBtn = micBtn;
+
+    if (errorHint) errorHint.classList.remove('show');
+
+    let finalTranscript = '';
+
+    rec.onresult = (event) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        const text = result[0].transcript;
+        if (result.isFinal) finalTranscript += text + ' ';
+        else interim += text;
+      }
+      const finalText = finalTranscript.trim();
+      const composed = this.composeText(this.baseValue, finalText);
+      // Show interim hint as live preview (do not commit to value)
+      if (interim) {
+        if (interimHint) {
+          interimHint.textContent = '… ' + interim;
+          interimHint.classList.add('show');
+        }
+      } else if (interimHint) {
+        interimHint.classList.remove('show');
+      }
+      // Update field with current final transcript
+      fieldEl.value = composed;
+      // Fire input event so any listeners react
+      fieldEl.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    rec.onerror = (event) => {
+      let msg;
+      switch (event.error) {
+        case 'not-allowed':
+        case 'service-not-allowed':
+          msg = t('Cần cấp quyền microphone', 'Microphone permission needed'); break;
+        case 'no-speech':
+          msg = t('Không nghe thấy gì', 'No speech detected'); break;
+        case 'network':
+          msg = t('Lỗi mạng — cần internet để nhận diện', 'Network error — internet required'); break;
+        case 'audio-capture':
+          msg = t('Không tìm thấy microphone', 'No microphone found'); break;
+        case 'aborted':
+          msg = null;  // user-initiated, no error to show
+          break;
+        default:
+          msg = t('Lỗi: ', 'Error: ') + event.error;
+      }
+      if (msg) this.showError(errorHint, msg);
+    };
+
+    rec.onend = () => {
+      // Recognition stopped (either user pressed stop, or auto-timeout)
+      this.cleanup();
+    };
+
+    try {
+      rec.start();
+      micBtn.classList.add('listening');
+      micBtn.setAttribute('aria-label', t('Dừng nghe','Stop listening'));
+    } catch(e) {
+      this.showError(errorHint, t('Không thể khởi động', 'Could not start') + ': ' + e.message);
+      this.recognition = null;
+    }
+  },
+
+  stop() {
+    if (!this.recognition) return;
+    try { this.recognition.stop(); } catch(e) {}
+    // cleanup will run on onend
+  },
+
+  cleanup() {
+    if (this.micBtn) {
+      this.micBtn.classList.remove('listening');
+      this.micBtn.setAttribute('aria-label', t('Nhập bằng giọng nói','Voice input'));
+    }
+    if (this.interimHint) this.interimHint.classList.remove('show');
+    this.recognition = null;
+    this.activeFieldId = null;
+    this.baseValue = '';
+    this.interimHint = null;
+    this.micBtn = null;
+  },
+
+  showError(errorHint, msg) {
+    if (!errorHint) { showToast(msg); return; }
+    errorHint.textContent = msg;
+    errorHint.classList.add('show');
+    setTimeout(() => errorHint.classList.remove('show'), 4000);
+  },
+
+  composeText(base, finalText) {
+    if (!finalText) return base;
+    if (!base) return this.capitalize(finalText);
+    const needsSpace = !/\s$/.test(base) && !/^[\s,.!?;:]/.test(finalText);
+    return base + (needsSpace ? ' ' : '') + finalText;
+  },
+
+  capitalize(s) {
+    if (!s) return s;
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+};
+
+/* Attach mic UI to a text input or textarea */
+function attachMic(fieldEl) {
+  if (!fieldEl || fieldEl._micAttached) return;
+  if (!isSpeechSupported()) return;  // silently skip if not supported
+  fieldEl._micAttached = true;
+
+  // Ensure field has an id for tracking
+  if (!fieldEl.id) fieldEl.id = 'fld_' + uid();
+
+  // Wrap the field in mic-field container if not already
+  const parent = fieldEl.parentNode;
+  let wrapper;
+  if (parent.classList && parent.classList.contains('mic-field')) {
+    wrapper = parent;
+  } else {
+    wrapper = document.createElement('div');
+    wrapper.className = 'mic-field';
+    parent.insertBefore(wrapper, fieldEl);
+    wrapper.appendChild(fieldEl);
+  }
+
+  // Controls (mic + lang chip)
+  const controls = document.createElement('div');
+  controls.className = 'mic-controls';
+
+  const langBtn = document.createElement('button');
+  langBtn.type = 'button';
+  langBtn.className = 'mic-lang';
+  langBtn.textContent = currentSpeechLangLabel();
+  langBtn.setAttribute('aria-label', t('Chọn ngôn ngữ','Pick language'));
+
+  const popover = document.createElement('div');
+  popover.className = 'mic-lang-popover';
+  SPEECH_LANGS.forEach(lang => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = lang[state.lang] + ' (' + lang.label + ')';
+    if ((state.settings.speechLang || 'vi-VN') === lang.code) b.classList.add('active');
+    b.onclick = (e) => {
+      e.stopPropagation();
+      state.settings.speechLang = lang.code;
+      save();
+      // Update all lang chips and popovers everywhere
+      document.querySelectorAll('.mic-lang').forEach(c => c.textContent = currentSpeechLangLabel());
+      document.querySelectorAll('.mic-lang-popover button').forEach(btn2 => {
+        btn2.classList.toggle('active',
+          btn2.textContent.includes('(' + lang.label + ')') &&
+          (state.settings.speechLang === lang.code)
+        );
+      });
+      // Rebuild active highlight in each popover
+      document.querySelectorAll('.mic-lang-popover').forEach(pop => {
+        const buttons = pop.querySelectorAll('button');
+        SPEECH_LANGS.forEach((L, i) => {
+          if (buttons[i]) buttons[i].classList.toggle('active', state.settings.speechLang === L.code);
+        });
+      });
+      closeAllPopovers();
+      // If currently listening on this field, restart with new lang
+      if (SpeechManager.isListening() && SpeechManager.activeFieldId === fieldEl.id) {
+        SpeechManager.stop();
+        setTimeout(() => SpeechManager.start(fieldEl, micBtn, interimHint, errorHint), 200);
+      }
+    };
+    popover.appendChild(b);
+  });
+
+  langBtn.onclick = (e) => {
+    e.stopPropagation();
+    const isOpen = popover.classList.contains('open');
+    closeAllPopovers();
+    if (!isOpen) {
+      popover.classList.add('open');
+      langBtn.classList.add('open');
+    }
+  };
+
+  const micBtn = document.createElement('button');
+  micBtn.type = 'button';
+  micBtn.className = 'mic-btn';
+  micBtn.setAttribute('aria-label', t('Nhập bằng giọng nói','Voice input'));
+  micBtn.innerHTML = `<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <rect x="5" y="1.5" width="4" height="7" rx="2" fill="currentColor" stroke="none"/>
+    <path d="M3 7v0.5a4 4 0 0 0 8 0V7"/>
+    <line x1="7" y1="11.5" x2="7" y2="13"/>
+  </svg>`;
+
+  // Hints (interim + error)
+  const interimHint = document.createElement('div');
+  interimHint.className = 'mic-interim-hint';
+  const errorHint = document.createElement('div');
+  errorHint.className = 'mic-error-hint';
+
+  micBtn.onclick = (e) => {
+    e.stopPropagation();
+    closeAllPopovers();
+    if (SpeechManager.isListening() && SpeechManager.activeFieldId === fieldEl.id) {
+      SpeechManager.stop();
+    } else {
+      // If another field is listening, stop it first
+      if (SpeechManager.isListening()) SpeechManager.stop();
+      SpeechManager.start(fieldEl, micBtn, interimHint, errorHint);
+    }
+  };
+
+  controls.appendChild(langBtn);
+  controls.appendChild(micBtn);
+  controls.appendChild(popover);
+  wrapper.appendChild(controls);
+  wrapper.appendChild(interimHint);
+  wrapper.appendChild(errorHint);
+}
+
+function currentSpeechLangLabel() {
+  const code = state.settings.speechLang || 'vi-VN';
+  const lang = SPEECH_LANGS.find(l => l.code === code) || SPEECH_LANGS[0];
+  return '🎙 ' + lang.label;
+}
+
+function closeAllPopovers() {
+  document.querySelectorAll('.mic-lang-popover.open').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.mic-lang.open').forEach(b => b.classList.remove('open'));
+}
+document.addEventListener('click', closeAllPopovers);
+
+/* Attach mic to all relevant fields */
+function attachMicToAllFields() {
+  if (!isSpeechSupported()) return;
+  // Note inputs
+  attachMic(document.getElementById('nt-title'));
+  attachMic(document.getElementById('nt-desc'));
+  // Issue inputs
+  attachMic(document.getElementById('is-title'));
+  attachMic(document.getElementById('is-desc'));
+  // Practice inputs
+  attachMic(document.getElementById('pr-name'));
+  attachMic(document.getElementById('pr-desc'));
+  // Schedule inputs
+  attachMic(document.getElementById('sch-name'));
+}
+
+/* ============================================================
    INIT
 ============================================================ */
 setupFilterChips();
 updateFilterChips();
 applyLang();
 renderAll();
+attachMicToAllFields();
 
 /* Service worker for offline */
 if ('serviceWorker' in navigator) {
