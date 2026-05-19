@@ -559,6 +559,258 @@ main {
   padding: 2px 6px;
   border-radius: 2px;
 }
+
+/* ============ DROPDOWN MENU (header) ============ */
+.menu-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  width: 34px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink-soft);
+  margin-right: 8px;
+  padding: 0;
+  transition: all 0.15s;
+}
+.menu-btn:active { background: var(--ink); color: var(--paper); }
+.menu-btn svg { display: block; }
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 14px;
+  margin-top: 6px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(26,24,20,0.18), 0 2px 6px rgba(26,24,20,0.08);
+  min-width: 200px;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.dropdown.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(196,181,154,0.4);
+  letter-spacing: 0.3px;
+}
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-item:active { background: var(--paper-deep); }
+.dropdown-item .icon {
+  font-family: 'Noto Serif Display', serif;
+  font-size: 18px;
+  color: var(--vermillion);
+  width: 22px;
+  text-align: center;
+  line-height: 1;
+}
+.dropdown-item.active {
+  background: linear-gradient(180deg, rgba(160,124,58,0.08), rgba(160,124,58,0.04));
+  color: var(--vermillion);
+  font-weight: 600;
+}
+
+/* ============ NOTES ============ */
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-radius: 1px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.priority-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.prio-q1 { color: var(--vermillion); border-color: rgba(156,58,46,0.4); background: rgba(156,58,46,0.08); }
+.prio-q1::before { background: var(--vermillion); }
+.prio-q2 { color: var(--gold); border-color: rgba(160,124,58,0.4); background: rgba(160,124,58,0.08); }
+.prio-q2::before { background: var(--gold); }
+.prio-q3 { color: #5a6a8c; border-color: rgba(90,106,140,0.4); background: rgba(90,106,140,0.08); }
+.prio-q3::before { background: #5a6a8c; }
+.prio-q4 { color: var(--jade); border-color: rgba(107,128,104,0.4); background: rgba(107,128,104,0.08); }
+.prio-q4::before { background: var(--jade); }
+
+.pin-icon {
+  color: var(--vermillion);
+  font-size: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.note-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.note-tick {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--ink-faint);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: all 0.2s;
+}
+.note-tick:active { transform: scale(0.9); }
+.note-tick.done {
+  background: var(--jade);
+  border-color: var(--jade);
+  color: var(--paper);
+}
+.note-tick.done::after {
+  content: '✓';
+  font-size: 14px;
+  font-weight: bold;
+}
+.note-title-done {
+  text-decoration: line-through;
+  color: var(--ink-faint);
+}
+
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--line);
+}
+.filter-chip {
+  background: rgba(255,255,255,0.4);
+  border: 1px solid var(--line);
+  padding: 5px 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--ink-faint);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-chip.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.filter-group-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: -2px;
+}
+.filter-group-label:first-child { margin-top: 0; }
+
+.priority-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.priority-option {
+  background: rgba(255,255,255,0.4);
+  border: 1.5px solid var(--line);
+  padding: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  text-align: left;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.3;
+  color: var(--ink-soft);
+}
+.priority-option:active { transform: scale(0.98); }
+.priority-option.selected {
+  background: rgba(160,124,58,0.1);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.priority-option .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.priority-option[data-prio="q1"] .dot { background: var(--vermillion); }
+.priority-option[data-prio="q2"] .dot { background: var(--gold); }
+.priority-option[data-prio="q3"] .dot { background: #5a6a8c; }
+.priority-option[data-prio="q4"] .dot { background: var(--jade); }
+
+.pin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s;
+}
+.pin-toggle.on {
+  background: rgba(156,58,46,0.08);
+  border-color: var(--vermillion);
+  color: var(--vermillion);
+}
+.pin-toggle .pin-mark {
+  font-size: 18px;
+  line-height: 1;
+}
 </style>
 </head>
 <body>
@@ -568,9 +820,28 @@ main {
     <span class="brand-mark">道</span>
     <span class="brand-text" data-vi="Thời Khóa" data-en="Practice">Thời Khóa</span>
   </div>
-  <div class="lang-switch">
-    <button id="lang-vi" class="active">VI</button>
-    <button id="lang-en">EN</button>
+  <div class="header-right">
+    <button class="menu-btn" id="menu-btn" aria-label="Menu">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+        <line x1="1" y1="2" x2="17" y2="2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="1" y1="7" x2="17" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="1" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="lang-switch">
+      <button id="lang-vi" class="active">VI</button>
+      <button id="lang-en">EN</button>
+    </div>
+  </div>
+  <div class="dropdown" id="header-dropdown">
+    <button class="dropdown-item" data-menu-view="notes">
+      <span class="icon">❋</span>
+      <span data-vi="Ghi chú" data-en="Notes">Ghi chú</span>
+    </button>
+    <button class="dropdown-item" data-menu-view="settings">
+      <span class="icon">⚙</span>
+      <span data-vi="Cài đặt" data-en="Settings">Cài đặt</span>
+    </button>
   </div>
 </header>
 
@@ -599,6 +870,10 @@ main {
     <div class="summary-tile">
       <div class="num" id="sum-issues-done">0</div>
       <div class="lbl" data-vi="Đã hoàn thành" data-en="Completed">Đã hoàn thành</div>
+    </div>
+    <div class="summary-tile" style="grid-column: span 2;">
+      <div class="num" id="sum-notes">0</div>
+      <div class="lbl" data-vi="Ghi chú chưa xong" data-en="Open notes">Ghi chú chưa xong</div>
     </div>
   </div>
 
@@ -638,6 +913,35 @@ main {
     <span class="section-sub" data-vi="cần chuyển hóa" data-en="to transform">cần chuyển hóa</span>
   </div>
   <div id="issues-list"></div>
+</section>
+
+<!-- NOTES -->
+<section class="view" id="view-notes">
+  <div class="section-head">
+    <h1 class="section-title" data-vi="Ghi Chú" data-en="Notes">Ghi Chú</h1>
+    <span class="section-sub" data-vi="quan sát & nhận biết" data-en="observe & note">quan sát & nhận biết</span>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-group-label" data-vi="Trạng thái" data-en="Status">Trạng thái</div>
+    <button class="filter-chip active" data-filter-status="all" data-vi="Tất cả" data-en="All">Tất cả</button>
+    <button class="filter-chip" data-filter-status="active" data-vi="Chưa xong" data-en="Active">Chưa xong</button>
+    <button class="filter-chip" data-filter-status="done" data-vi="Đã xong" data-en="Done">Đã xong</button>
+
+    <div class="filter-group-label" data-vi="Ghim" data-en="Pinned">Ghim</div>
+    <button class="filter-chip active" data-filter-pin="all" data-vi="Tất cả" data-en="All">Tất cả</button>
+    <button class="filter-chip" data-filter-pin="pinned" data-vi="Đã ghim" data-en="Pinned">Đã ghim</button>
+    <button class="filter-chip" data-filter-pin="unpinned" data-vi="Không ghim" data-en="Unpinned">Không ghim</button>
+
+    <div class="filter-group-label" data-vi="Phân loại" data-en="Priority">Phân loại</div>
+    <button class="filter-chip active" data-filter-prio="all" data-vi="Tất cả" data-en="All">Tất cả</button>
+    <button class="filter-chip" data-filter-prio="q1" data-vi="QT & Khẩn" data-en="Imp & Urg">QT & Khẩn</button>
+    <button class="filter-chip" data-filter-prio="q2" data-vi="QT, không khẩn" data-en="Imp, not urg">QT, không khẩn</button>
+    <button class="filter-chip" data-filter-prio="q3" data-vi="Khẩn, không QT" data-en="Urg, not imp">Khẩn, không QT</button>
+    <button class="filter-chip" data-filter-prio="q4" data-vi="Cả hai không" data-en="Neither">Cả hai không</button>
+  </div>
+
+  <div id="notes-list"></div>
 </section>
 
 <!-- SETTINGS -->
@@ -727,10 +1031,6 @@ main {
     <span class="nav-icon">⚘</span>
     <span data-vi="Vấn đề" data-en="Issues">Vấn đề</span>
   </button>
-  <button class="nav-item" data-view="settings">
-    <span class="nav-icon">⚙</span>
-    <span data-vi="Cài đặt" data-en="Settings">Cài đặt</span>
-  </button>
 </nav>
 
 <!-- Modal: Schedule -->
@@ -814,6 +1114,52 @@ main {
   </div>
 </div>
 
+<!-- Modal: Note -->
+<div class="modal-bg" id="modal-note">
+  <div class="modal">
+    <h2 data-vi="Ghi chú" data-en="Note">Ghi chú</h2>
+    <div class="form-row">
+      <label data-vi="Tiêu đề" data-en="Title">Tiêu đề</label>
+      <input type="text" id="nt-title" placeholder="">
+    </div>
+    <div class="form-row">
+      <label data-vi="Mô tả" data-en="Description">Mô tả</label>
+      <textarea id="nt-desc" style="min-height:90px;"></textarea>
+    </div>
+    <div class="form-row">
+      <label data-vi="Phân loại" data-en="Priority">Phân loại</label>
+      <div class="priority-picker">
+        <button type="button" class="priority-option" data-prio="q1">
+          <span class="dot"></span>
+          <span data-vi="Quan trọng & Khẩn cấp" data-en="Important & Urgent">Quan trọng & Khẩn cấp</span>
+        </button>
+        <button type="button" class="priority-option" data-prio="q2">
+          <span class="dot"></span>
+          <span data-vi="Quan trọng, không khẩn" data-en="Important, not urgent">Quan trọng, không khẩn</span>
+        </button>
+        <button type="button" class="priority-option" data-prio="q3">
+          <span class="dot"></span>
+          <span data-vi="Khẩn cấp, không QT" data-en="Urgent, not important">Khẩn cấp, không QT</span>
+        </button>
+        <button type="button" class="priority-option" data-prio="q4">
+          <span class="dot"></span>
+          <span data-vi="Không khẩn, không QT" data-en="Neither urgent nor important">Không khẩn, không QT</span>
+        </button>
+      </div>
+    </div>
+    <div class="form-row">
+      <button type="button" class="pin-toggle" id="nt-pin-toggle">
+        <span class="pin-mark">📌</span>
+        <span class="pin-label" data-vi="Ghim ghi chú này" data-en="Pin this note">Ghim ghi chú này</span>
+      </button>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+      <button class="btn btn-ghost" id="nt-cancel" data-vi="Huỷ" data-en="Cancel">Huỷ</button>
+      <button class="btn" id="nt-save" data-vi="Lưu" data-en="Save">Lưu</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Choose what to add -->
 <div class="modal-bg" id="modal-choose">
   <div class="modal" style="border-top-color:var(--vermillion);">
@@ -830,6 +1176,10 @@ main {
       <button class="btn btn-ghost" data-choose="issue" style="justify-content:flex-start;padding:14px;">
         <span style="font-size:22px;margin-right:10px;">⚘</span>
         <span data-vi="Vấn đề" data-en="Issue">Vấn đề</span>
+      </button>
+      <button class="btn btn-ghost" data-choose="note" style="justify-content:flex-start;padding:14px;">
+        <span style="font-size:22px;margin-right:10px;">❋</span>
+        <span data-vi="Ghi chú" data-en="Note">Ghi chú</span>
       </button>
     </div>
     <div style="text-align:center;margin-top:14px;">
@@ -856,13 +1206,26 @@ let state = {
   customUnits: [],
   schedules: [],   // {id, name, from, to, repeat, lastNotified}
   practices: [],   // {id, name, desc, target, unit, createdAt, log: {dateStr: amount}}
-  issues: []       // {id, title, desc, createdAt, doneAt|null}
+  issues: [],      // {id, title, desc, createdAt, doneAt|null}
+  notes: [],       // {id, title, desc, priority: 'q1'|'q2'|'q3'|'q4', pinned, createdAt, updatedAt, doneAt|null}
+  notesFilter: { status: 'all', pin: 'all', prio: 'all' }
 };
 
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 function load() {
   const raw = localStorage.getItem(STORAGE_KEY);
-  if (raw) { try { state = Object.assign(state, JSON.parse(raw)); } catch(e){} }
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      // Merge defensively: defaults from `state` stay if old data lacks the field
+      state = Object.assign({}, state, parsed);
+      // Ensure new fields exist even if old data didn't have them
+      if (!Array.isArray(state.notes)) state.notes = [];
+      if (!state.notesFilter || typeof state.notesFilter !== 'object') {
+        state.notesFilter = { status: 'all', pin: 'all', prio: 'all' };
+      }
+    } catch(e){}
+  }
 }
 load();
 
@@ -897,17 +1260,49 @@ document.getElementById('lang-en').onclick = () => { state.lang='en'; save(); ap
 /* ============================================================
    NAVIGATION
 ============================================================ */
+function switchView(viewName) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  const navBtn = document.querySelector(`.nav-item[data-view="${viewName}"]`);
+  if (navBtn) navBtn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const targetView = document.getElementById('view-'+viewName);
+  if (targetView) targetView.classList.add('active');
+  currentView = viewName;
+  // Mark active item in dropdown
+  document.querySelectorAll('.dropdown-item').forEach(it => {
+    it.classList.toggle('active', it.dataset.menuView === viewName);
+  });
+  renderAll();
+}
+
 document.querySelectorAll('.nav-item').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-'+btn.dataset.view).classList.add('active');
-    currentView = btn.dataset.view;
-    renderAll();
-  };
+  btn.onclick = () => switchView(btn.dataset.view);
 });
 let currentView = 'dashboard';
+
+/* ============================================================
+   DROPDOWN MENU (header)
+============================================================ */
+const dropdown = document.getElementById('header-dropdown');
+const menuBtn = document.getElementById('menu-btn');
+
+menuBtn.onclick = (e) => {
+  e.stopPropagation();
+  dropdown.classList.toggle('open');
+};
+
+document.addEventListener('click', (e) => {
+  if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+    dropdown.classList.remove('open');
+  }
+});
+
+document.querySelectorAll('.dropdown-item').forEach(item => {
+  item.onclick = () => {
+    dropdown.classList.remove('open');
+    switchView(item.dataset.menuView);
+  };
+});
 
 /* ============================================================
    FAB - quick add
@@ -916,6 +1311,7 @@ document.getElementById('fab').onclick = () => {
   if (currentView === 'schedules') openModal('modal-schedule');
   else if (currentView === 'practices') openModal('modal-practice');
   else if (currentView === 'issues') openModal('modal-issue');
+  else if (currentView === 'notes') openModal('modal-note');
   else openModal('modal-choose');
 };
 document.querySelectorAll('[data-choose]').forEach(b => {
@@ -925,6 +1321,7 @@ document.querySelectorAll('[data-choose]').forEach(b => {
     if (c === 'schedule') openModal('modal-schedule');
     if (c === 'practice') openModal('modal-practice');
     if (c === 'issue') openModal('modal-issue');
+    if (c === 'note') openModal('modal-note');
   };
 });
 document.getElementById('choose-cancel').onclick = () => closeModal('modal-choose');
@@ -959,6 +1356,11 @@ function clearModal(id) {
   } else if (id === 'modal-issue') {
     document.getElementById('is-title').value = '';
     document.getElementById('is-desc').value = '';
+  } else if (id === 'modal-note') {
+    document.getElementById('nt-title').value = '';
+    document.getElementById('nt-desc').value = '';
+    setNoteModalPriority('q2');  // default
+    setNoteModalPin(false);
   }
 }
 
@@ -982,12 +1384,43 @@ function prefillModal(id, idRef) {
     if (!i) return;
     document.getElementById('is-title').value = i.title;
     document.getElementById('is-desc').value = i.desc || '';
+  } else if (id === 'modal-note') {
+    const n = state.notes.find(x => x.id === idRef);
+    if (!n) return;
+    document.getElementById('nt-title').value = n.title;
+    document.getElementById('nt-desc').value = n.desc || '';
+    setNoteModalPriority(n.priority || 'q2');
+    setNoteModalPin(!!n.pinned);
   }
 }
 
 document.getElementById('sch-cancel').onclick = () => closeModal('modal-schedule');
 document.getElementById('pr-cancel').onclick = () => closeModal('modal-practice');
 document.getElementById('is-cancel').onclick = () => closeModal('modal-issue');
+document.getElementById('nt-cancel').onclick = () => closeModal('modal-note');
+
+/* Note priority & pin pickers */
+let noteModalPriority = 'q2';
+let noteModalPin = false;
+function setNoteModalPriority(p) {
+  noteModalPriority = p;
+  document.querySelectorAll('#modal-note .priority-option').forEach(o => {
+    o.classList.toggle('selected', o.dataset.prio === p);
+  });
+}
+function setNoteModalPin(on) {
+  noteModalPin = !!on;
+  const btn = document.getElementById('nt-pin-toggle');
+  btn.classList.toggle('on', noteModalPin);
+  const label = btn.querySelector('.pin-label');
+  label.textContent = noteModalPin
+    ? t('Đã ghim', 'Pinned')
+    : t('Ghim ghi chú này', 'Pin this note');
+}
+document.querySelectorAll('#modal-note .priority-option').forEach(o => {
+  o.onclick = () => setNoteModalPriority(o.dataset.prio);
+});
+document.getElementById('nt-pin-toggle').onclick = () => setNoteModalPin(!noteModalPin);
 
 /* SAVE handlers */
 document.getElementById('sch-save').onclick = () => {
@@ -1033,6 +1466,34 @@ document.getElementById('is-save').onclick = () => {
     state.issues.push({id: uid(), title, desc, createdAt: Date.now(), doneAt: null});
   }
   save(); closeModal('modal-issue'); renderAll();
+  showToast(t('Đã lưu','Saved'));
+};
+
+document.getElementById('nt-save').onclick = () => {
+  const title = document.getElementById('nt-title').value.trim();
+  const desc = document.getElementById('nt-desc').value.trim();
+  if (!title) { showToast(t('Vui lòng nhập tiêu đề','Please enter title')); return; }
+  const now = Date.now();
+  if (editingId) {
+    const n = state.notes.find(x => x.id === editingId);
+    Object.assign(n, {
+      title, desc,
+      priority: noteModalPriority,
+      pinned: noteModalPin,
+      updatedAt: now
+    });
+  } else {
+    state.notes.push({
+      id: uid(),
+      title, desc,
+      priority: noteModalPriority,
+      pinned: noteModalPin,
+      createdAt: now,
+      updatedAt: now,
+      doneAt: null
+    });
+  }
+  save(); closeModal('modal-note'); renderAll();
   showToast(t('Đã lưu','Saved'));
 };
 
@@ -1246,6 +1707,155 @@ function formatNum(n) {
 }
 
 /* ============================================================
+   RENDER: Notes
+============================================================ */
+const PRIO_LABELS = {
+  q1: { vi: 'Quan trọng & Khẩn cấp', en: 'Important & Urgent' },
+  q2: { vi: 'Quan trọng, không khẩn', en: 'Important, not urgent' },
+  q3: { vi: 'Khẩn cấp, không QT', en: 'Urgent, not important' },
+  q4: { vi: 'Không khẩn, không QT', en: 'Neither' }
+};
+
+function getNoteSortRank(n) {
+  // Lower returned = appears higher
+  // Pinned active first, then unpinned active, then done
+  if (n.doneAt) return 2;
+  if (n.pinned) return 0;
+  return 1;
+}
+
+function sortedFilteredNotes() {
+  const f = state.notesFilter;
+  let list = state.notes.slice();
+
+  // Filter status
+  if (f.status === 'active') list = list.filter(n => !n.doneAt);
+  else if (f.status === 'done') list = list.filter(n => n.doneAt);
+
+  // Filter pin
+  if (f.pin === 'pinned') list = list.filter(n => n.pinned);
+  else if (f.pin === 'unpinned') list = list.filter(n => !n.pinned);
+
+  // Filter priority
+  if (f.prio !== 'all') list = list.filter(n => n.priority === f.prio);
+
+  // Sort: rank ascending, then updatedAt desc (newest first)
+  list.sort((a, b) => {
+    const ra = getNoteSortRank(a), rb = getNoteSortRank(b);
+    if (ra !== rb) return ra - rb;
+    return (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt);
+  });
+
+  return list;
+}
+
+function renderNotes() {
+  const el = document.getElementById('notes-list');
+  if (!el) return;
+  const list = sortedFilteredNotes();
+
+  if (!state.notes.length) {
+    el.innerHTML = `<div class="empty">${t('Chưa có ghi chú nào','No notes yet')}</div>`;
+    return;
+  }
+  if (!list.length) {
+    el.innerHTML = `<div class="empty">${t('Không có ghi chú phù hợp với bộ lọc','No notes match the filter')}</div>`;
+    return;
+  }
+
+  el.innerHTML = '';
+  list.forEach(n => {
+    const prio = n.priority || 'q2';
+    const prioLabel = (PRIO_LABELS[prio] || PRIO_LABELS.q2)[state.lang];
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="note-checkbox">
+        <button class="note-tick ${n.doneAt ? 'done' : ''}" data-toggle-done="${n.id}" aria-label="${t('Đánh dấu','Toggle')}"></button>
+        <div style="flex:1;min-width:0;">
+          <div class="card-title ${n.doneAt ? 'note-title-done' : ''}" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${n.pinned ? '<span class="pin-icon" title="pinned">📌</span>' : ''}
+            <span>${escapeHTML(n.title)}</span>
+          </div>
+          ${n.desc ? `<div class="card-desc ${n.doneAt ? 'note-title-done' : ''}">${escapeHTML(n.desc).replace(/\n/g,'<br>')}</div>` : ''}
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;">
+            <span class="priority-badge prio-${prio}">${prioLabel}</span>
+          </div>
+          <div class="card-meta" style="margin-top:8px;">
+            ${t('Tạo','Created')}: ${fmtDate(n.createdAt)}
+            ${n.updatedAt && n.updatedAt !== n.createdAt ? ` · ${t('Sửa','Updated')}: ${fmtDate(n.updatedAt)}` : ''}
+            ${n.doneAt ? ` · ${t('Xong','Done')}: ${fmtDate(n.doneAt)}` : ''}
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-ghost btn-small" data-pin-nt="${n.id}">
+              ${n.pinned ? '📌 ' + t('Bỏ ghim','Unpin') : '📌 ' + t('Ghim','Pin')}
+            </button>
+            <button class="btn btn-ghost btn-small" data-edit-nt="${n.id}">${t('Sửa','Edit')}</button>
+            <button class="btn btn-danger btn-small" data-del-nt="${n.id}">${t('Xoá','Delete')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    el.appendChild(card);
+  });
+
+  el.querySelectorAll('[data-toggle-done]').forEach(b =>
+    b.onclick = () => {
+      const n = state.notes.find(x => x.id === b.dataset.toggleDone);
+      n.doneAt = n.doneAt ? null : Date.now();
+      n.updatedAt = Date.now();
+      save(); renderAll();
+      showToast(n.doneAt ? t('Hoàn thành','Completed') : t('Mở lại','Reopened'));
+    });
+  el.querySelectorAll('[data-pin-nt]').forEach(b =>
+    b.onclick = () => {
+      const n = state.notes.find(x => x.id === b.dataset.pinNt);
+      n.pinned = !n.pinned;
+      n.updatedAt = Date.now();
+      save(); renderAll();
+    });
+  el.querySelectorAll('[data-edit-nt]').forEach(b =>
+    b.onclick = () => openModal('modal-note', b.dataset.editNt));
+  el.querySelectorAll('[data-del-nt]').forEach(b =>
+    b.onclick = () => {
+      if (confirm(t('Xoá ghi chú này?','Delete this note?'))) {
+        state.notes = state.notes.filter(x => x.id !== b.dataset.delNt);
+        save(); renderAll();
+      }
+    });
+}
+
+/* Filter chip handlers */
+function setupFilterChips() {
+  document.querySelectorAll('[data-filter-status]').forEach(c => {
+    c.onclick = () => {
+      state.notesFilter.status = c.dataset.filterStatus;
+      save(); updateFilterChips(); renderNotes();
+    };
+  });
+  document.querySelectorAll('[data-filter-pin]').forEach(c => {
+    c.onclick = () => {
+      state.notesFilter.pin = c.dataset.filterPin;
+      save(); updateFilterChips(); renderNotes();
+    };
+  });
+  document.querySelectorAll('[data-filter-prio]').forEach(c => {
+    c.onclick = () => {
+      state.notesFilter.prio = c.dataset.filterPrio;
+      save(); updateFilterChips(); renderNotes();
+    };
+  });
+}
+function updateFilterChips() {
+  document.querySelectorAll('[data-filter-status]').forEach(c =>
+    c.classList.toggle('active', c.dataset.filterStatus === state.notesFilter.status));
+  document.querySelectorAll('[data-filter-pin]').forEach(c =>
+    c.classList.toggle('active', c.dataset.filterPin === state.notesFilter.pin));
+  document.querySelectorAll('[data-filter-prio]').forEach(c =>
+    c.classList.toggle('active', c.dataset.filterPrio === state.notesFilter.prio));
+}
+
+/* ============================================================
    RENDER: Issues
 ============================================================ */
 function durationLabel(ms) {
@@ -1338,6 +1948,8 @@ function renderDashboard() {
   document.getElementById('sum-schedules').textContent = state.schedules.length;
   document.getElementById('sum-issues-open').textContent = state.issues.filter(i => !i.doneAt).length;
   document.getElementById('sum-issues-done').textContent = state.issues.filter(i => i.doneAt).length;
+  const sumNotes = document.getElementById('sum-notes');
+  if (sumNotes) sumNotes.textContent = state.notes.filter(n => !n.doneAt).length;
   renderPractices('dash-practices', 5);
   renderIssues('dash-issues', 5);
 }
@@ -1349,6 +1961,7 @@ function renderAll() {
   renderSchedules();
   renderPractices();
   renderIssues();
+  renderNotes();
   renderDashboard();
   renderCustomUnits();
   document.getElementById('setting-lead').value = state.settings.leadMinutes;
@@ -1513,6 +2126,8 @@ document.getElementById('import-file').onchange = (e) => {
 /* ============================================================
    INIT
 ============================================================ */
+setupFilterChips();
+updateFilterChips();
 applyLang();
 renderAll();
 
