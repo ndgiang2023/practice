@@ -812,6 +812,201 @@ main {
   font-size: 18px;
   line-height: 1;
 }
+
+/* ============ BELL PICKER ============ */
+.bell-picker {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.bell-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.4);
+  border: 1.5px solid var(--line);
+  border-radius: 3px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: left;
+  transition: all 0.15s;
+  width: 100%;
+}
+.bell-option:active { transform: scale(0.99); }
+.bell-option.selected {
+  background: rgba(160,124,58,0.1);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.bell-option .bell-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+}
+.bell-option .bell-intensity {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  font-family: 'Cormorant Garamond', serif;
+  white-space: nowrap;
+}
+.bell-option.selected .bell-intensity { color: var(--vermillion); }
+.bell-option .bell-play {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-faint);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-soft);
+  font-size: 12px;
+  flex-shrink: 0;
+  padding: 0;
+  transition: all 0.15s;
+}
+.bell-option .bell-play:active {
+  background: var(--ink);
+  color: var(--paper);
+}
+.bell-option.selected .bell-play {
+  border-color: var(--vermillion);
+  color: var(--vermillion);
+}
+
+/* ============ BACKUP SLOTS ============ */
+.backup-slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(180deg, #faf4e7, #f1e8d4);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 3px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.backup-slot.empty {
+  background: rgba(255,255,255,0.3);
+  border-left-color: var(--ink-faint);
+  opacity: 0.7;
+}
+.backup-slot-info {
+  flex: 1;
+  min-width: 0;
+}
+.backup-slot-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.2px;
+}
+.backup-slot-time {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+.backup-slot-age {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+.backup-slot-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.backup-slot-actions button {
+  background: transparent;
+  border: 1px solid var(--ink-faint);
+  border-radius: 2px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.backup-slot-actions button:active {
+  transform: scale(0.92);
+}
+.backup-slot-actions button.restore-btn {
+  border-color: var(--jade);
+  color: var(--jade);
+}
+.backup-slot-actions button.download-btn {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.backup-slot-actions button.delete-btn {
+  border-color: var(--vermillion);
+  color: var(--vermillion);
+}
+.backup-slot-actions button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ============ UNDO RESTORE BANNER ============ */
+.undo-restore-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #fff4d6, #f5e4b8);
+  border: 1.5px solid var(--vermillion);
+  border-left-width: 4px;
+  border-radius: 3px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  animation: fadeIn 0.3s ease;
+}
+.undo-restore-info {
+  flex: 1;
+  min-width: 0;
+}
+.undo-restore-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vermillion);
+  margin-bottom: 2px;
+}
+.undo-restore-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ink-faint);
+}
+.undo-restore-btn {
+  background: var(--vermillion);
+  color: var(--paper);
+  border: none;
+  padding: 8px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 500;
+  transition: transform 0.15s;
+}
+.undo-restore-btn:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -982,6 +1177,12 @@ main {
     </label>
   </div>
 
+  <div style="margin: 14px 0;">
+    <div class="setting-label" style="margin-bottom:6px;" data-vi="Loại chuông" data-en="Bell sound">Loại chuông</div>
+    <div class="setting-desc" style="margin-bottom:10px;" data-vi="Chọn một loại — bấm để nghe thử" data-en="Pick one — tap to preview">Chọn một loại — bấm để nghe thử</div>
+    <div id="bell-picker" class="bell-picker"></div>
+  </div>
+
   <div class="setting-row">
     <button class="btn btn-ghost" id="test-alert" data-vi="Thử chuông" data-en="Test bell">Thử chuông</button>
     <button class="btn btn-ghost" id="enable-notif" data-vi="Bật thông báo" data-en="Enable notifications">Bật thông báo</button>
@@ -1004,6 +1205,16 @@ main {
     <button class="btn btn-ghost btn-small" id="export-data" data-vi="Xuất dữ liệu" data-en="Export">Xuất dữ liệu</button>
     <button class="btn btn-ghost btn-small" id="import-data" data-vi="Nhập dữ liệu" data-en="Import">Nhập dữ liệu</button>
     <input type="file" id="import-file" accept=".json" style="display:none;">
+  </div>
+
+  <div style="margin-top: 20px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;margin:0;" data-vi="Bản sao lưu tự động" data-en="Automatic backups">Bản sao lưu tự động</h3>
+      <button class="btn btn-ghost btn-small" id="force-backup-now" data-vi="Lưu ngay" data-en="Snapshot now" style="padding:4px 10px;font-size:12px;">Lưu ngay</button>
+    </div>
+    <div style="font-size:13px;color:var(--ink-faint);margin-bottom:12px;font-style:italic;" data-vi="4 bản trượt: 30 phút, 1 giờ, 3 giờ, 5 giờ trước" data-en="4 rolling snapshots: 30 min, 1h, 3h, 5h ago">4 bản trượt: 30 phút, 1 giờ, 3 giờ, 5 giờ trước</div>
+    <div id="undo-restore-container"></div>
+    <div id="backup-slots"></div>
   </div>
 
   <div class="divider-deco">· ◇ ·</div>
@@ -1214,7 +1425,7 @@ const defaultUnits = {
 
 let state = {
   lang: 'vi',
-  settings: { leadMinutes: 5, vibrate: true, bell: true },
+  settings: { leadMinutes: 5, vibrate: true, bell: true, bellSound: 'bowlLarge' },
   customUnits: [],
   schedules: [],   // {id, name, from, to, repeat, lastNotified}
   practices: [],   // {id, name, desc, target, unit, createdAt, log: {dateStr: amount}}
@@ -1236,6 +1447,11 @@ function load() {
       if (!state.notesFilter || typeof state.notesFilter !== 'object') {
         state.notesFilter = { status: 'all', pin: 'all', prio: 'all' };
       }
+      if (!state.settings) state.settings = {};
+      if (state.settings.bellSound === undefined) state.settings.bellSound = 'bowlLarge';
+      if (state.settings.leadMinutes === undefined) state.settings.leadMinutes = 5;
+      if (state.settings.vibrate === undefined) state.settings.vibrate = true;
+      if (state.settings.bell === undefined) state.settings.bell = true;
     } catch(e){}
   }
 }
@@ -1986,6 +2202,8 @@ function renderAll() {
   renderNotes();
   renderDashboard();
   renderCustomUnits();
+  renderBellPicker();
+  renderBackupSlots();
   document.getElementById('setting-lead').value = state.settings.leadMinutes;
   toggleSettingBtn('vibrate-btn', state.settings.vibrate);
   toggleSettingBtn('bell-btn', state.settings.bell);
@@ -2024,36 +2242,235 @@ document.getElementById('enable-notif').onclick = async () => {
 };
 
 /* ============================================================
-   ALERT (vibrate + bell + notification)
+   BELL LIBRARY
 ============================================================ */
 let audioCtx = null;
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   return audioCtx;
 }
-function playBell() {
-  try {
-    const ctx = getAudioCtx();
-    const now = ctx.currentTime;
-    // Layered sine tones simulating a singing bowl: low fundamental + harmonics
-    const tones = [
-      { freq: 196, gain: 0.4, dur: 4.0 },  // G3
-      { freq: 392, gain: 0.25, dur: 3.5 }, // G4
-      { freq: 587, gain: 0.15, dur: 3.0 }, // D5
-      { freq: 784, gain: 0.08, dur: 2.5 }  // G5
+
+/* Helper: play a single tone with envelope */
+function tone(ctx, startAt, freq, peakGain, duration, type = 'sine', attack = 0.02) {
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  g.gain.setValueAtTime(0, startAt);
+  g.gain.linearRampToValueAtTime(peakGain, startAt + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(startAt);
+  osc.stop(startAt + duration + 0.05);
+}
+
+/* Helper: noise burst for wooden/percussive sounds */
+function noiseBurst(ctx, startAt, duration, filterFreq, peakGain, filterType = 'lowpass') {
+  const bufferSize = Math.ceil(ctx.sampleRate * duration);
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+  const src = ctx.createBufferSource();
+  src.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = filterType;
+  filter.frequency.value = filterFreq;
+  filter.Q.value = 1.5;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(peakGain, startAt);
+  g.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+  src.connect(filter); filter.connect(g); g.connect(ctx.destination);
+  src.start(startAt);
+  src.stop(startAt + duration + 0.05);
+}
+
+/* ===== Bell sound implementations ===== */
+const BELL_SOUNDS = {
+  // === LIGHT ===
+  windchime: function(ctx, t0) {
+    // Series of high tinkling chimes
+    const notes = [
+      { f: 1568, d: 1.8, off: 0 },     // G6
+      { f: 1760, d: 1.6, off: 0.12 },  // A6
+      { f: 2093, d: 1.4, off: 0.25 },  // C7
+      { f: 1865, d: 1.5, off: 0.40 }   // A#6
     ];
-    tones.forEach(({freq, gain, dur}) => {
+    notes.forEach(n => tone(ctx, t0 + n.off, n.f, 0.12, n.d, 'sine'));
+  },
+
+  bellSmall: function(ctx, t0) {
+    // Small bronze bell — one bright clear ting with quick decay
+    tone(ctx, t0, 1318, 0.30, 2.5, 'sine');           // E6 fundamental
+    tone(ctx, t0, 1976, 0.15, 2.2, 'sine');           // B6 harmonic
+    tone(ctx, t0, 2637, 0.08, 1.8, 'sine');           // E7
+    tone(ctx, t0, 3951, 0.04, 1.0, 'sine');           // B7
+  },
+
+  // === LIGHT-MEDIUM ===
+  bowlSmall: function(ctx, t0) {
+    // Small singing bowl: warm, ~3 sec
+    tone(ctx, t0, 392, 0.32, 3.5, 'sine');            // G4
+    tone(ctx, t0, 587, 0.22, 3.0, 'sine');            // D5
+    tone(ctx, t0, 784, 0.14, 2.5, 'sine');            // G5
+    tone(ctx, t0, 1175, 0.08, 2.0, 'sine');           // D6
+  },
+
+  // === MEDIUM ===
+  bowlLarge: function(ctx, t0) {
+    // Large singing bowl: deep, very long
+    tone(ctx, t0, 196, 0.45, 5.5, 'sine');            // G3
+    tone(ctx, t0, 392, 0.28, 4.5, 'sine');            // G4
+    tone(ctx, t0, 587, 0.16, 3.8, 'sine');            // D5
+    tone(ctx, t0, 784, 0.10, 3.0, 'sine');            // G5
+  },
+
+  bellDouble: function(ctx, t0) {
+    // Two bell strikes with a gap
+    const strike = (t) => {
+      tone(ctx, t, 880, 0.30, 1.8, 'sine');
+      tone(ctx, t, 1320, 0.18, 1.5, 'sine');
+      tone(ctx, t, 1760, 0.09, 1.2, 'sine');
+    };
+    strike(t0);
+    strike(t0 + 1.4);
+  },
+
+  // === MEDIUM-STRONG ===
+  templeBell: function(ctx, t0) {
+    // Temple bell: heavier, with initial strike noise + deep resonance
+    noiseBurst(ctx, t0, 0.04, 1200, 0.25, 'bandpass');  // strike attack
+    tone(ctx, t0, 130, 0.48, 6.0, 'sine');              // C3 deep fundamental
+    tone(ctx, t0, 261, 0.32, 5.0, 'sine');              // C4
+    tone(ctx, t0, 392, 0.22, 4.0, 'sine');              // G4
+    tone(ctx, t0, 523, 0.14, 3.0, 'sine');              // C5
+    tone(ctx, t0, 784, 0.08, 2.0, 'sine');              // G5
+  },
+
+  // === STRONG ===
+  greatBell: function(ctx, t0) {
+    // Great temple bell (đại hồng chung) — deep but audible on phone speakers
+    // (avoiding <100Hz which phone speakers can't reproduce)
+    noiseBurst(ctx, t0, 0.12, 1500, 0.45, 'lowpass');   // strong strike
+    tone(ctx, t0, 130, 0.55, 7.5, 'sine');              // C3 — lowest practical for phone
+    tone(ctx, t0, 165, 0.50, 7.0, 'sine');              // E3
+    tone(ctx, t0, 196, 0.45, 6.5, 'sine');              // G3
+    tone(ctx, t0, 261, 0.35, 5.5, 'sine');              // C4
+    tone(ctx, t0, 392, 0.22, 4.0, 'sine');              // G4
+    tone(ctx, t0, 523, 0.12, 2.5, 'sine');              // C5
+  },
+
+  // === PERCUSSIVE ===
+  woodenFish: function(ctx, t0) {
+    // Mộc ngư / mõ — 3 short wooden knocks. Uses fast pitch drop to mimic wood.
+    const knock = (t) => {
+      // Pitch-dropping click (220Hz → 80Hz fast) = wood "tok"
       const osc = ctx.createOscillator();
       const g = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.value = freq;
-      g.gain.setValueAtTime(0, now);
-      g.gain.linearRampToValueAtTime(gain, now + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      osc.frequency.setValueAtTime(220, t);
+      osc.frequency.exponentialRampToValueAtTime(80, t + 0.06);
+      g.gain.setValueAtTime(0.6, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
       osc.connect(g); g.connect(ctx.destination);
-      osc.start(now); osc.stop(now + dur);
+      osc.start(t); osc.stop(t + 0.16);
+      // Higher click for clarity
+      tone(ctx, t, 1500, 0.18, 0.04, 'sine', 0.001);
+    };
+    knock(t0);
+    knock(t0 + 0.40);
+    knock(t0 + 0.80);
+  },
+
+  // === SOFT GONG ===
+  gong: function(ctx, t0) {
+    // Asian gong — inharmonic resonance with attack-and-swell character.
+    // Frequencies kept above phone-speaker rolloff (~150Hz).
+    noiseBurst(ctx, t0, 0.10, 2000, 0.30, 'lowpass');   // strike "shimmer"
+    const partials = [
+      { f: 165, g: 0.45, d: 6.5 },   // low fundamental
+      { f: 220, g: 0.38, d: 6.0 },
+      { f: 311, g: 0.28, d: 5.0 },
+      { f: 466, g: 0.20, d: 4.0 },
+      { f: 622, g: 0.14, d: 3.0 },
+      { f: 880, g: 0.08, d: 2.0 }
+    ];
+    partials.forEach(({f, g: peakGain, d}) => {
+      const osc = ctx.createOscillator();
+      const gNode = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      gNode.gain.setValueAtTime(0, t0);
+      gNode.gain.linearRampToValueAtTime(peakGain, t0 + 0.05);  // quick attack
+      gNode.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+      osc.connect(gNode); gNode.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0 + d + 0.05);
     });
+  }
+};
+
+/* Bell metadata: id, intensity (1=light .. 5=strong), labels */
+const BELL_LIST = [
+  { id: 'windchime',  intensity: 1, vi: 'Chuông gió',       en: 'Wind chime' },
+  { id: 'bellSmall',  intensity: 2, vi: 'Khánh đồng',       en: 'Small bell' },
+  { id: 'bowlSmall',  intensity: 2, vi: 'Bát đồng nhỏ',     en: 'Small singing bowl' },
+  { id: 'bowlLarge',  intensity: 3, vi: 'Bát đồng lớn',     en: 'Large singing bowl' },
+  { id: 'bellDouble', intensity: 3, vi: 'Chuông đôi',       en: 'Double bell' },
+  { id: 'templeBell', intensity: 4, vi: 'Chuông chùa',      en: 'Temple bell' },
+  { id: 'gong',       intensity: 4, vi: 'Cồng',             en: 'Gong' },
+  { id: 'greatBell',  intensity: 5, vi: 'Đại hồng chung',   en: 'Great bell' },
+  { id: 'woodenFish', intensity: 2, vi: 'Mõ',               en: 'Wooden fish' }
+];
+
+function intensityLabel(n) {
+  const dots = '●●●●●';
+  const empty = '○○○○○';
+  return dots.slice(0, n) + empty.slice(n);
+}
+
+function playBell(bellId) {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const id = bellId || state.settings.bellSound || 'bowlLarge';
+    const fn = BELL_SOUNDS[id] || BELL_SOUNDS.bowlLarge;
+    fn(ctx, ctx.currentTime);
   } catch(e) { console.warn('bell error', e); }
+}
+
+function renderBellPicker() {
+  const el = document.getElementById('bell-picker');
+  if (!el) return;
+  const current = state.settings.bellSound || 'bowlLarge';
+  el.innerHTML = '';
+  BELL_LIST.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'bell-option' + (b.id === current ? ' selected' : '');
+    div.innerHTML = `
+      <button class="bell-play" data-preview="${b.id}" aria-label="Play preview">▶</button>
+      <span class="bell-name">${b.id === current ? '● ' : ''}${b[state.lang]}</span>
+      <span class="bell-intensity" title="intensity">${intensityLabel(b.intensity)}</span>
+    `;
+    // Click on the whole row selects (except the play button)
+    div.onclick = (e) => {
+      if (e.target.closest('.bell-play')) return;
+      state.settings.bellSound = b.id;
+      save();
+      renderBellPicker();
+      playBell(b.id);  // play once on selection
+      showToast(t('Đã chọn: ','Selected: ') + b[state.lang]);
+    };
+    el.appendChild(div);
+  });
+  // Wire preview buttons
+  el.querySelectorAll('[data-preview]').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      // unlock audio on user gesture
+      unlockAudio();
+      playBell(btn.dataset.preview);
+    };
+  });
 }
 function vibrate() {
   if ('vibrate' in navigator) navigator.vibrate([400, 200, 400, 200, 800]);
@@ -2144,6 +2561,302 @@ document.getElementById('import-file').onchange = (e) => {
   };
   reader.readAsText(file);
 };
+
+/* ============================================================
+   AUTO-BACKUP (4 rolling slots: 30m, 1h, 3h, 5h)
+============================================================ */
+const BACKUP_SLOTS = [
+  { id: '30m', minutes: 30,  vi: '30 phút trước', en: '30 min ago' },
+  { id: '1h',  minutes: 60,  vi: '1 giờ trước',   en: '1 hour ago' },
+  { id: '3h',  minutes: 180, vi: '3 giờ trước',   en: '3 hours ago' },
+  { id: '5h',  minutes: 300, vi: '5 giờ trước',   en: '5 hours ago' }
+];
+
+function backupKey(slotId) { return 'thoiKhoa_backup_' + slotId; }
+
+function readBackup(slotId) {
+  try {
+    const raw = localStorage.getItem(backupKey(slotId));
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function writeBackup(slotId, snapshot) {
+  try {
+    localStorage.setItem(backupKey(slotId), JSON.stringify(snapshot));
+    return true;
+  } catch(e) {
+    // Likely quota exceeded
+    console.warn('backup write failed', e);
+    showToast(t('Không lưu được bản sao — bộ nhớ đầy', 'Backup failed — storage full'));
+    return false;
+  }
+}
+
+function deleteBackup(slotId) {
+  localStorage.removeItem(backupKey(slotId));
+}
+
+/* Create snapshot - same format as Export */
+function makeSnapshot() {
+  return {
+    capturedAt: Date.now(),
+    data: JSON.parse(JSON.stringify(state))  // deep clone
+  };
+}
+
+/* Check each slot: refresh if missing or older than threshold.
+   A snapshot for slot X should be ~X minutes old. We refresh when:
+   - slot is empty
+   - OR slot age > X + (X * 0.5) [i.e. > 1.5x its nominal age]
+   This keeps each slot roughly at its intended age. */
+function autoBackupTick() {
+  const now = Date.now();
+  BACKUP_SLOTS.forEach(slot => {
+    const existing = readBackup(slot.id);
+    const threshold = slot.minutes * 60 * 1000 * 1.5;
+    const shouldWrite = !existing || (now - existing.capturedAt) > threshold;
+    if (shouldWrite) {
+      writeBackup(slot.id, makeSnapshot());
+    }
+  });
+  // Re-render if Settings view is active so timestamps refresh
+  if (currentView === 'settings') renderBackupSlots();
+}
+
+function ageLabel(ms) {
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return t('vừa nãy', 'just now');
+  if (mins < 60) return mins + ' ' + t('phút', 'min');
+  const hrs = Math.floor(mins / 60);
+  const remMins = mins % 60;
+  if (hrs < 24) return hrs + t('g', 'h') + (remMins ? ' ' + remMins + t('p', 'm') : '');
+  const days = Math.floor(hrs / 24);
+  return days + ' ' + t('ngày', 'days');
+}
+
+function fmtBackupTime(ts) {
+  const d = new Date(ts);
+  const locale = state.lang === 'vi' ? 'vi-VN' : 'en-US';
+  return d.toLocaleString(locale, {
+    day: '2-digit', month: '2-digit',
+    hour: '2-digit', minute: '2-digit',
+    hour12: false
+  });
+}
+
+function renderBackupSlots() {
+  renderUndoRestore();
+  const el = document.getElementById('backup-slots');
+  if (!el) return;
+  el.innerHTML = '';
+  const now = Date.now();
+
+  BACKUP_SLOTS.forEach(slot => {
+    const b = readBackup(slot.id);
+    const div = document.createElement('div');
+    div.className = 'backup-slot' + (b ? '' : ' empty');
+
+    if (b) {
+      const age = now - b.capturedAt;
+      const sizeKB = (JSON.stringify(b).length / 1024).toFixed(1);
+      div.innerHTML = `
+        <div class="backup-slot-info">
+          <div class="backup-slot-label">${slot[state.lang]}</div>
+          <div class="backup-slot-time">${fmtBackupTime(b.capturedAt)} · ${sizeKB} KB</div>
+          <div class="backup-slot-age">${t('cách đây', 'aged')} ${ageLabel(age)}</div>
+        </div>
+        <div class="backup-slot-actions">
+          <button class="restore-btn" data-restore="${slot.id}" title="${t('Khôi phục','Restore')}">↶</button>
+          <button class="download-btn" data-download="${slot.id}" title="${t('Tải về','Download')}">↓</button>
+          <button class="delete-btn" data-delete="${slot.id}" title="${t('Xóa','Delete')}">×</button>
+        </div>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="backup-slot-info">
+          <div class="backup-slot-label">${slot[state.lang]}</div>
+          <div class="backup-slot-time" style="font-style:italic;">${t('chưa có bản sao', 'no snapshot yet')}</div>
+        </div>
+        <div class="backup-slot-actions">
+          <button disabled>↶</button>
+          <button disabled>↓</button>
+          <button disabled>×</button>
+        </div>
+      `;
+    }
+    el.appendChild(div);
+  });
+
+  /* Wire actions */
+  el.querySelectorAll('[data-restore]').forEach(b =>
+    b.onclick = () => restoreBackup(b.dataset.restore));
+  el.querySelectorAll('[data-download]').forEach(b =>
+    b.onclick = () => downloadBackup(b.dataset.download));
+  el.querySelectorAll('[data-delete]').forEach(b =>
+    b.onclick = () => {
+      if (confirm(t('Xóa bản sao lưu này?', 'Delete this backup?'))) {
+        deleteBackup(b.dataset.delete);
+        renderBackupSlots();
+        showToast(t('Đã xóa', 'Deleted'));
+      }
+    });
+}
+
+/* Undo-restore window: how long the banner stays visible after a restore */
+const UNDO_RESTORE_WINDOW_MS = 60 * 60 * 1000;  // 1 hour
+
+function readPreRestore() {
+  try {
+    const raw = localStorage.getItem('thoiKhoa_backup_pre_restore');
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function readRestoreMeta() {
+  try {
+    const raw = localStorage.getItem('thoiKhoa_restore_meta');
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function clearUndoRestore() {
+  localStorage.removeItem('thoiKhoa_backup_pre_restore');
+  localStorage.removeItem('thoiKhoa_restore_meta');
+}
+
+function restoreBackup(slotId) {
+  const b = readBackup(slotId);
+  if (!b) return;
+  const slot = BACKUP_SLOTS.find(s => s.id === slotId);
+  const msg = t(
+    `Khôi phục về bản "${slot.vi}" (${fmtBackupTime(b.capturedAt)})?\n\nDữ liệu hiện tại sẽ được lưu vào bản sao trước khi khôi phục, có thể quay lại sau.`,
+    `Restore to "${slot.en}" (${fmtBackupTime(b.capturedAt)})?\n\nCurrent data will be saved as a safety snapshot before restoring, so you can revert.`
+  );
+  if (!confirm(msg)) return;
+
+  // Safety snapshot of current state + meta info for the undo banner
+  try {
+    localStorage.setItem('thoiKhoa_backup_pre_restore', JSON.stringify(makeSnapshot()));
+    localStorage.setItem('thoiKhoa_restore_meta', JSON.stringify({
+      restoredAt: Date.now(),
+      fromSlotId: slotId,
+      fromSlotVi: slot.vi,
+      fromSlotEn: slot.en,
+      fromCapturedAt: b.capturedAt
+    }));
+  } catch(e) { /* non-blocking */ }
+
+  // Apply the backup data
+  try {
+    state = Object.assign({}, state, b.data);
+    // Re-run migration defensively
+    if (!Array.isArray(state.notes)) state.notes = [];
+    if (!state.notesFilter) state.notesFilter = { status:'all', pin:'all', prio:'all' };
+    if (!state.settings) state.settings = {};
+    if (state.settings.bellSound === undefined) state.settings.bellSound = 'bowlLarge';
+    if (state.settings.leadMinutes === undefined) state.settings.leadMinutes = 5;
+    if (state.settings.vibrate === undefined) state.settings.vibrate = true;
+    if (state.settings.bell === undefined) state.settings.bell = true;
+    save();
+    renderAll();
+    showToast(t('Đã khôi phục', 'Restored'));
+  } catch(e) {
+    showToast(t('Khôi phục thất bại', 'Restore failed'));
+  }
+}
+
+function undoRestore() {
+  const pre = readPreRestore();
+  const meta = readRestoreMeta();
+  if (!pre) {
+    showToast(t('Không tìm thấy bản trước khôi phục', 'No pre-restore snapshot found'));
+    clearUndoRestore();
+    renderBackupSlots();
+    return;
+  }
+  const confirmMsg = t(
+    'Hoàn tác về dữ liệu trước khi khôi phục? Dữ liệu hiện tại sẽ bị thay thế.',
+    'Undo the restore? Current data will be replaced with what was there before.'
+  );
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    state = Object.assign({}, state, pre.data);
+    if (!Array.isArray(state.notes)) state.notes = [];
+    if (!state.notesFilter) state.notesFilter = { status:'all', pin:'all', prio:'all' };
+    if (!state.settings) state.settings = {};
+    if (state.settings.bellSound === undefined) state.settings.bellSound = 'bowlLarge';
+    if (state.settings.leadMinutes === undefined) state.settings.leadMinutes = 5;
+    if (state.settings.vibrate === undefined) state.settings.vibrate = true;
+    if (state.settings.bell === undefined) state.settings.bell = true;
+    save();
+    clearUndoRestore();
+    renderAll();
+    showToast(t('Đã hoàn tác', 'Undone'));
+  } catch(e) {
+    showToast(t('Hoàn tác thất bại', 'Undo failed'));
+  }
+}
+
+function renderUndoRestore() {
+  const container = document.getElementById('undo-restore-container');
+  if (!container) return;
+  const meta = readRestoreMeta();
+  const pre = readPreRestore();
+
+  // Show banner only if both exist AND we are still within the undo window
+  const expired = meta && (Date.now() - meta.restoredAt) > UNDO_RESTORE_WINDOW_MS;
+  if (!meta || !pre || expired) {
+    // Auto-cleanup if expired
+    if (expired) clearUndoRestore();
+    container.innerHTML = '';
+    return;
+  }
+
+  const slotLabel = state.lang === 'vi' ? meta.fromSlotVi : meta.fromSlotEn;
+  const ageMs = Date.now() - meta.restoredAt;
+  const ageStr = ageLabel(ageMs);
+
+  container.innerHTML = `
+    <div class="undo-restore-banner">
+      <div class="undo-restore-info">
+        <div class="undo-restore-label">${t('Vừa khôi phục từ','Just restored from')} "${slotLabel}"</div>
+        <div class="undo-restore-desc">${t('Có thể hoàn tác trong vòng 1 giờ','Can be undone within 1 hour')} · ${t('cách đây','aged')} ${ageStr}</div>
+      </div>
+      <button class="undo-restore-btn" id="undo-restore-btn">↺ ${t('Hoàn tác','Undo')}</button>
+    </div>
+  `;
+
+  document.getElementById('undo-restore-btn').onclick = undoRestore;
+}
+
+function downloadBackup(slotId) {
+  const b = readBackup(slotId);
+  if (!b) return;
+  const slot = BACKUP_SLOTS.find(s => s.id === slotId);
+  // Export the .data portion in the same format as manual Export
+  const blob = new Blob([JSON.stringify(b.data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date(b.capturedAt).toISOString().slice(0,19).replace(/[:T]/g,'-');
+  a.href = url;
+  a.download = `thoi-khoa-backup-${slot.id}-${ts}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Force create snapshot for ALL slots immediately */
+document.getElementById('force-backup-now').onclick = () => {
+  BACKUP_SLOTS.forEach(slot => writeBackup(slot.id, makeSnapshot()));
+  renderBackupSlots();
+  showToast(t('Đã lưu bản sao mới', 'New snapshot saved'));
+};
+
+/* Run autoBackupTick on app load + every 5 minutes */
+setTimeout(autoBackupTick, 3000);       // give app time to settle, then create initial backups
+setInterval(autoBackupTick, 5 * 60000); // every 5 minutes
 
 /* ============================================================
    REFRESH APP
