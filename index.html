@@ -203,6 +203,9 @@ main {
   font-size: 13.5px;
   color: var(--ink-soft);
   margin: 6px 0 10px;
+  white-space: pre-wrap;       /* preserve line breaks and spacing from input */
+  word-wrap: break-word;       /* wrap long words */
+  overflow-wrap: break-word;
 }
 .card-actions {
   display: flex;
@@ -2137,7 +2140,7 @@ function renderNotes() {
             ${n.pinned ? '<span class="pin-icon" title="pinned">📌</span>' : ''}
             <span>${escapeHTML(n.title)}</span>
           </div>
-          ${n.desc ? `<div class="card-desc ${n.doneAt ? 'note-title-done' : ''}">${escapeHTML(n.desc).replace(/\n/g,'<br>')}</div>` : ''}
+          ${n.desc ? `<div class="card-desc ${n.doneAt ? 'note-title-done' : ''}">${escapeHTML(n.desc)}</div>` : ''}
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;">
             <span class="priority-badge prio-${prio}">${prioLabel}</span>
           </div>
