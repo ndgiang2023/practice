@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif:wght@400;500;600&family=Noto+Serif+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=UFFP2NRa"></script>
 <style>
 :root {
   --paper: #f4ede0;
@@ -1127,6 +1128,107 @@ main {
   display: none;
 }
 .mic-error-hint.show { display: block; }
+
+/* ============ TTS SPEAKER BUTTON ============ */
+.card {
+  /* establish positioning context for absolute speaker button */
+  position: relative;
+}
+.tts-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 1;
+}
+.tts-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.6);
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.15s;
+}
+.tts-btn:active { transform: scale(0.9); }
+.tts-btn.speaking {
+  background: var(--vermillion);
+  border-color: var(--vermillion);
+  color: var(--paper);
+  animation: ttsPulse 1.4s ease-in-out infinite;
+}
+@keyframes ttsPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(156,58,46,0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(156,58,46,0); }
+}
+.tts-btn svg { width: 14px; height: 14px; display: block; }
+
+.tts-lang {
+  height: 30px;
+  min-width: 38px;
+  padding: 0 6px;
+  border-radius: 15px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.85);
+  color: var(--ink-faint);
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0 8px;
+}
+.tts-lang:active { transform: scale(0.92); }
+.tts-lang.open { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.tts-lang-popover {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 6px 18px rgba(26,24,20,0.18);
+  z-index: 3;
+  display: none;
+  flex-direction: column;
+  min-width: 130px;
+  overflow: hidden;
+}
+.tts-lang-popover.open { display: flex; }
+.tts-lang-popover button {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(196,181,154,0.4);
+}
+.tts-lang-popover button:last-child { border-bottom: none; }
+.tts-lang-popover button:active { background: var(--paper-deep); }
+.tts-lang-popover button.active {
+  background: rgba(160,124,58,0.1);
+  color: var(--vermillion);
+  font-weight: 600;
+}
+
+/* Make room on card so the controls don't overlap title */
+.card.has-tts .card-title { padding-right: 82px; }
+.card.has-tts .status-tag { margin-right: 82px; }
 </style>
 </head>
 <body>
@@ -1134,7 +1236,7 @@ main {
 <header>
   <div class="brand">
     <span class="brand-mark">道</span>
-    <span class="brand-text" data-vi="Thời Khóa" data-en="Practice">Thời Khóa</span>
+    <span class="brand-text" data-vi="Thực Hành" data-en="Practice">Thực Hành</span>
   </div>
   <div class="header-right">
     <button class="menu-btn" id="menu-btn" aria-label="Menu">
@@ -1301,6 +1403,65 @@ main {
     <div class="setting-label" style="margin-bottom:6px;" data-vi="Loại chuông" data-en="Bell sound">Loại chuông</div>
     <div class="setting-desc" style="margin-bottom:10px;" data-vi="Chọn một loại — bấm để nghe thử" data-en="Pick one — tap to preview">Chọn một loại — bấm để nghe thử</div>
     <div id="bell-picker" class="bell-picker"></div>
+  </div>
+
+  <div class="divider-deco">· ◇ ·</div>
+
+  <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:6px;" data-vi="Đọc văn bản" data-en="Text-to-speech">Đọc văn bản</h3>
+  <div style="font-size:13px;color:var(--ink-faint);margin-bottom:14px;font-style:italic;" data-vi="Phát âm tiêu đề và mô tả của ghi chú / vấn đề" data-en="Read note & issue title and description aloud">Phát âm tiêu đề và mô tả của ghi chú / vấn đề</div>
+
+  <div class="setting-row">
+    <div>
+      <div class="setting-label" data-vi="Ngôn ngữ đọc" data-en="Speech language">Ngôn ngữ đọc</div>
+      <div class="setting-desc" data-vi="ngôn ngữ mặc định khi đọc" data-en="default language for reading">ngôn ngữ mặc định khi đọc</div>
+    </div>
+    <select id="tts-lang-select" style="padding:8px;font-family:'Cormorant Garamond',serif;font-size:14px;border:1px solid var(--line);background:rgba(255,255,255,0.5);">
+      <option value="vi-VN">Tiếng Việt</option>
+      <option value="en-US">English</option>
+      <option value="ko-KR">한국어</option>
+      <option value="zh-CN">中文</option>
+    </select>
+  </div>
+
+  <div class="setting-row" id="tts-vn-gender-row">
+    <div>
+      <div class="setting-label" data-vi="Giọng tiếng Việt" data-en="Vietnamese voice">Giọng tiếng Việt</div>
+      <div class="setting-desc" data-vi="dùng ResponsiveVoice — chất lượng tốt hơn" data-en="uses ResponsiveVoice — better quality">dùng ResponsiveVoice — chất lượng tốt hơn</div>
+    </div>
+    <div style="display:flex;gap:4px;border:1px solid var(--line);border-radius:2px;overflow:hidden;">
+      <button type="button" id="tts-vn-female" class="active" style="background:var(--ink);color:var(--paper);border:none;padding:6px 14px;font-family:'Cormorant Garamond',serif;font-size:13px;cursor:pointer;letter-spacing:0.5px;">♀ <span data-vi="Nữ" data-en="Female">Nữ</span></button>
+      <button type="button" id="tts-vn-male" style="background:transparent;color:var(--ink-faint);border:none;padding:6px 14px;font-family:'Cormorant Garamond',serif;font-size:13px;cursor:pointer;letter-spacing:0.5px;">♂ <span data-vi="Nam" data-en="Male">Nam</span></button>
+    </div>
+  </div>
+
+  <div style="margin: 14px 0;">
+    <div class="setting-label" style="margin-bottom:6px;" data-vi="Giọng đọc" data-en="Voice">Giọng đọc</div>
+    <div class="setting-desc" style="margin-bottom:8px;" data-vi="♀ = giọng nữ, ♂ = giọng nam (theo nhận diện)" data-en="♀ = female, ♂ = male (detected from voice name)">♀ = giọng nữ, ♂ = giọng nam (theo nhận diện)</div>
+    <select id="tts-voice-select" style="width:100%;padding:8px;font-family:'Cormorant Garamond',serif;font-size:14px;border:1px solid var(--line);background:rgba(255,255,255,0.5);">
+      <option value="">Tự động chọn</option>
+    </select>
+    <div style="font-size:11px;color:var(--ink-faint);margin-top:6px;font-style:italic;" data-vi="Không thấy giọng tiếng Việt? Cài Google Text-to-Speech và tải gói tiếng Việt trong Cài đặt điện thoại." data-en="No Vietnamese voice? Install Google TTS and download the Vietnamese pack in phone settings.">Không thấy giọng tiếng Việt? Cài Google Text-to-Speech và tải gói tiếng Việt trong Cài đặt điện thoại.</div>
+  </div>
+
+  <div class="setting-row">
+    <div>
+      <div class="setting-label" data-vi="Tốc độ đọc" data-en="Speech rate">Tốc độ đọc</div>
+      <div class="setting-desc"><span id="tts-rate-label">1.0×</span></div>
+    </div>
+    <input type="range" id="tts-rate" min="0.6" max="1.6" step="0.1" value="1.0" style="width:140px;">
+  </div>
+
+  <div class="setting-row">
+    <div>
+      <div class="setting-label" data-vi="Cao độ giọng" data-en="Voice pitch">Cao độ giọng</div>
+      <div class="setting-desc"><span id="tts-pitch-label">1.05</span> · <span data-vi="cao = nữ hơn, thấp = nam hơn" data-en="higher = more feminine">cao = nữ hơn, thấp = nam hơn</span></div>
+    </div>
+    <input type="range" id="tts-pitch" min="0.7" max="1.5" step="0.05" value="1.05" style="width:140px;">
+  </div>
+
+  <div class="setting-row">
+    <button class="btn btn-ghost" id="tts-test" data-vi="Thử đọc" data-en="Test speech">Thử đọc</button>
+    <button class="btn btn-ghost" id="tts-stop" data-vi="Dừng đọc" data-en="Stop">Dừng đọc</button>
   </div>
 
   <div class="setting-row">
@@ -1545,7 +1706,7 @@ const defaultUnits = {
 
 let state = {
   lang: 'vi',
-  settings: { leadMinutes: 5, vibrate: true, bell: true, bellSound: 'bowlLarge', speechLang: 'vi-VN' },
+  settings: { leadMinutes: 5, vibrate: true, bell: true, bellSound: 'bowlLarge', speechLang: 'vi-VN', ttsLang: 'vi-VN', ttsRate: 1.0, ttsPitch: 1.05, ttsVoiceName: '', ttsVnGender: 'female' },
   customUnits: [],
   schedules: [],   // {id, name, from, to, repeat, lastNotified}
   practices: [],   // {id, name, desc, target, unit, createdAt, log: {dateStr: amount}}
@@ -1573,6 +1734,11 @@ function load() {
       if (state.settings.vibrate === undefined) state.settings.vibrate = true;
       if (state.settings.bell === undefined) state.settings.bell = true;
       if (state.settings.speechLang === undefined) state.settings.speechLang = 'vi-VN';
+      if (state.settings.ttsLang === undefined) state.settings.ttsLang = 'vi-VN';
+      if (state.settings.ttsRate === undefined) state.settings.ttsRate = 1.0;
+      if (state.settings.ttsPitch === undefined) state.settings.ttsPitch = 1.05;
+      if (state.settings.ttsVoiceName === undefined) state.settings.ttsVoiceName = '';
+      if (state.settings.ttsVnGender === undefined) state.settings.ttsVnGender = 'female';
     } catch(e){}
   }
 }
@@ -1610,6 +1776,8 @@ document.getElementById('lang-en').onclick = () => { state.lang='en'; save(); ap
    NAVIGATION
 ============================================================ */
 function switchView(viewName) {
+  // Stop any in-progress TTS when navigating
+  if (typeof TTS !== 'undefined' && TTS.isSpeaking && TTS.isSpeaking()) TTS.stop();
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   const navBtn = document.querySelector(`.nav-item[data-view="${viewName}"]`);
   if (navBtn) navBtn.classList.add('active');
@@ -1703,6 +1871,10 @@ function closeModal(id) {
   // Stop any active mic when modal closes
   if (typeof SpeechManager !== 'undefined' && SpeechManager.isListening && SpeechManager.isListening()) {
     SpeechManager.stop();
+  }
+  // Stop any active TTS too
+  if (typeof TTS !== 'undefined' && TTS.isSpeaking && TTS.isSpeaking()) {
+    TTS.stop();
   }
 }
 
@@ -2131,8 +2303,9 @@ function renderNotes() {
     const prio = n.priority || 'q2';
     const prioLabel = (PRIO_LABELS[prio] || PRIO_LABELS.q2)[state.lang];
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card' + (n.desc ? ' has-tts' : '');
     card.innerHTML = `
+      ${n.desc ? ttsButtonHTML(n.id, 'note') : ''}
       <div class="note-checkbox">
         <button class="note-tick ${n.doneAt ? 'done' : ''}" data-toggle-done="${n.id}" aria-label="${t('Đánh dấu','Toggle')}"></button>
         <div style="flex:1;min-width:0;">
@@ -2186,6 +2359,7 @@ function renderNotes() {
         save(); renderAll();
       }
     });
+  wireTTSButtons(el);
 }
 
 /* Filter chip handlers */
@@ -2248,8 +2422,9 @@ function renderIssues(targetId='issues-list', limit=null) {
     const now = Date.now();
     const elapsed = (i.doneAt || now) - i.createdAt;
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card' + (i.desc ? ' has-tts' : '');
     card.innerHTML = `
+      ${i.desc && targetId === 'issues-list' ? ttsButtonHTML(i.id, 'issue') : ''}
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
         <div style="flex:1;">
           <div class="card-title">${escapeHTML(i.title)}</div>
@@ -2301,6 +2476,7 @@ function renderIssues(targetId='issues-list', limit=null) {
         save(); renderAll();
       }
     });
+  wireTTSButtons(el);
 }
 
 /* ============================================================
@@ -2365,6 +2541,99 @@ document.getElementById('enable-notif').onclick = async () => {
   const p = await Notification.requestPermission();
   showToast(p === 'granted' ? t('Đã bật','Enabled') : t('Bị từ chối','Denied'));
 };
+
+/* TTS settings handlers */
+function setupTTSSettings() {
+  const langSel = document.getElementById('tts-lang-select');
+  const voiceSel = document.getElementById('tts-voice-select');
+  const rate = document.getElementById('tts-rate');
+  const rateLabel = document.getElementById('tts-rate-label');
+  const pitch = document.getElementById('tts-pitch');
+  const pitchLabel = document.getElementById('tts-pitch-label');
+  const testBtn = document.getElementById('tts-test');
+  const stopBtn = document.getElementById('tts-stop');
+  const vnFemaleBtn = document.getElementById('tts-vn-female');
+  const vnMaleBtn = document.getElementById('tts-vn-male');
+  const vnRow = document.getElementById('tts-vn-gender-row');
+  if (!langSel || !rate) return;
+
+  // Init from state
+  langSel.value = state.settings.ttsLang || 'vi-VN';
+  rate.value = state.settings.ttsRate || 1.0;
+  rateLabel.textContent = parseFloat(rate.value).toFixed(1) + '×';
+  if (pitch) {
+    pitch.value = state.settings.ttsPitch || 1.05;
+    pitchLabel.textContent = parseFloat(pitch.value).toFixed(2);
+  }
+
+  // Update Vietnamese gender toggle visual state + visibility
+  function refreshVnGenderUI() {
+    const isVn = (state.settings.ttsLang || 'vi-VN').toLowerCase().startsWith('vi');
+    if (vnRow) vnRow.style.display = isVn ? '' : 'none';
+    const isFemale = (state.settings.ttsVnGender || 'female') === 'female';
+    if (vnFemaleBtn && vnMaleBtn) {
+      vnFemaleBtn.style.background = isFemale ? 'var(--ink)' : 'transparent';
+      vnFemaleBtn.style.color = isFemale ? 'var(--paper)' : 'var(--ink-faint)';
+      vnMaleBtn.style.background = isFemale ? 'transparent' : 'var(--ink)';
+      vnMaleBtn.style.color = isFemale ? 'var(--ink-faint)' : 'var(--paper)';
+    }
+  }
+  refreshVnGenderUI();
+
+  // Render voice list now (may be empty until voiceschanged fires)
+  renderTTSVoiceSelect();
+
+  langSel.onchange = () => {
+    state.settings.ttsLang = langSel.value;
+    state.settings.ttsVoiceName = '';  // reset picked voice when lang changes
+    save();
+    renderTTSVoiceSelect();
+    refreshVnGenderUI();
+  };
+  if (voiceSel) {
+    voiceSel.onchange = () => {
+      state.settings.ttsVoiceName = voiceSel.value;
+      save();
+    };
+  }
+  if (vnFemaleBtn) {
+    vnFemaleBtn.onclick = () => {
+      state.settings.ttsVnGender = 'female';
+      save();
+      refreshVnGenderUI();
+    };
+  }
+  if (vnMaleBtn) {
+    vnMaleBtn.onclick = () => {
+      state.settings.ttsVnGender = 'male';
+      save();
+      refreshVnGenderUI();
+    };
+  }
+  rate.oninput = () => {
+    state.settings.ttsRate = parseFloat(rate.value);
+    rateLabel.textContent = state.settings.ttsRate.toFixed(1) + '×';
+    save();
+  };
+  if (pitch) {
+    pitch.oninput = () => {
+      state.settings.ttsPitch = parseFloat(pitch.value);
+      pitchLabel.textContent = state.settings.ttsPitch.toFixed(2);
+      save();
+    };
+  }
+  testBtn.onclick = () => {
+    const samples = {
+      'vi-VN': 'Đây là âm thanh thử nghiệm. Chúc bạn tinh tấn trong tu tập.',
+      'en-US': 'This is a test sample. May your practice be diligent.',
+      'ko-KR': '이것은 테스트 음성입니다.',
+      'zh-CN': '这是测试语音。'
+    };
+    const lang = state.settings.ttsLang || 'vi-VN';
+    TTS.speak(samples[lang] || samples['vi-VN'], testBtn);
+  };
+  stopBtn.onclick = () => TTS.stop();
+}
 
 /* ============================================================
    BELL LIBRARY
@@ -3360,6 +3629,359 @@ function attachMicToAllFields() {
 }
 
 /* ============================================================
+   TEXT-TO-SPEECH (read text aloud)
+============================================================ */
+function isTTSSupported() {
+  return 'speechSynthesis' in window;
+}
+
+const TTS = {
+  currentBtn: null,
+  currentUtterance: null,
+  voices: [],
+  voicesReady: false,
+
+  isSpeaking() {
+    return !!this.currentUtterance;
+  },
+
+  /* Load voice list. Browsers populate this asynchronously on Android. */
+  loadVoices() {
+    if (!isTTSSupported()) return;
+    const v = speechSynthesis.getVoices();
+    if (v && v.length) {
+      this.voices = v;
+      this.voicesReady = true;
+      // Refresh voice dropdown in Settings if present
+      if (typeof renderTTSVoiceSelect === 'function') renderTTSVoiceSelect();
+    }
+  },
+
+  /* Get voices matching a language code (vi-VN, en-US, ko-KR, zh-CN).
+     Accepts both BCP-47 with - and locale-style with _ */
+  voicesForLang(langCode) {
+    const target = langCode.toLowerCase();
+    const targetBase = target.split(/[-_]/)[0];  // 'vi' from 'vi-vn'
+    return this.voices.filter(v => {
+      const vl = (v.lang || '').toLowerCase();
+      return vl === target ||
+             vl === target.replace('-', '_') ||
+             vl.startsWith(targetBase + '-') ||
+             vl.startsWith(targetBase + '_') ||
+             vl === targetBase;
+    });
+  },
+
+  /* Heuristic: detect if a voice name suggests female.
+     Most Android Google TTS voices for vi have names like:
+       'vi-vn-x-vif-local' or 'vi-VN-Standard-A' (female commonly)
+     Codes ending in 'f' or containing 'female', or names with common
+     Vietnamese female names. */
+  isLikelyFemale(voice) {
+    const n = (voice.name || '').toLowerCase();
+    if (/\bfemale\b|\bwoman\b|\bnữ\b/.test(n)) return true;
+    if (/\bmale\b|\bman\b|\bnam\b/.test(n)) return false;
+    // Common pattern: 'xx-yy-x-XXf-...' where 'f' suffix = female
+    if (/-x-\w*f[\b-]/i.test(n)) return true;
+    if (/-x-\w*m[\b-]/i.test(n)) return false;
+    // Heuristic by common voice name patterns
+    if (/(linh|ngoc|huong|thuy|mai|hoa|lan|thu|hien|hoai|an|standard-a|standard-c|wavenet-a|wavenet-c)/i.test(n)) return true;
+    if (/(minh|nam|quan|hung|tuan|long|standard-b|standard-d|wavenet-b|wavenet-d)/i.test(n)) return false;
+    return null;  // unknown
+  },
+
+  /* Pick best voice for current settings */
+  pickVoice(langCode) {
+    if (!this.voicesReady) this.loadVoices();
+    const candidates = this.voicesForLang(langCode);
+    if (!candidates.length) return null;
+
+    // If user picked a specific voice, use it (if still available)
+    const preferred = state.settings.ttsVoiceName;
+    if (preferred) {
+      const match = candidates.find(v => v.name === preferred);
+      if (match) return match;
+    }
+
+    // Prefer female if available
+    const females = candidates.filter(v => this.isLikelyFemale(v) === true);
+    if (females.length) {
+      // Prefer Google over others (usually higher quality)
+      const google = females.find(v => /google/i.test(v.name));
+      return google || females[0];
+    }
+
+    // Otherwise prefer Google network voices
+    const google = candidates.find(v => /google/i.test(v.name));
+    if (google) return google;
+
+    // Fall back to first match
+    return candidates[0];
+  },
+
+  /* Check if ResponsiveVoice is loaded and ready */
+  isResponsiveVoiceReady() {
+    return typeof responsiveVoice !== 'undefined' &&
+           typeof responsiveVoice.speak === 'function' &&
+           responsiveVoice.voiceSupport &&
+           responsiveVoice.voiceSupport();
+  },
+
+  /* Speak Vietnamese using ResponsiveVoice — better quality on most devices */
+  speakVietnamese(text, btn) {
+    const voiceName = state.settings.ttsVnGender === 'male'
+      ? 'Vietnamese Male'
+      : 'Vietnamese Female';
+    const rate = parseFloat(state.settings.ttsRate) || 1.0;
+    const pitch = parseFloat(state.settings.ttsPitch) || 1.0;
+
+    this.currentBtn = btn;
+    this.usingRV = true;
+    this.currentUtterance = { rv: true };  // marker so isSpeaking() returns true
+    if (btn) btn.classList.add('speaking');
+
+    try {
+      responsiveVoice.speak(text, voiceName, {
+        rate: rate,
+        pitch: pitch,
+        volume: 1.0,
+        onend: () => this.cleanup(),
+        onerror: (e) => {
+          console.warn('ResponsiveVoice error', e);
+          // Fallback to Web Speech API if RV fails (e.g. offline)
+          this.cleanup();
+          showToast(t('Lỗi ResponsiveVoice — dùng giọng hệ thống', 'ResponsiveVoice error — using system voice'));
+          this.speakWebSpeech(text, btn, 'vi-VN');
+        }
+      });
+    } catch(e) {
+      console.warn('RV speak threw', e);
+      this.cleanup();
+      this.speakWebSpeech(text, btn, 'vi-VN');
+    }
+  },
+
+  /* Speak via standard Web Speech API */
+  speakWebSpeech(text, btn, langCode) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = langCode;
+    u.rate = parseFloat(state.settings.ttsRate) || 1.0;
+    u.pitch = parseFloat(state.settings.ttsPitch) || 1.05;
+    u.volume = 1.0;
+
+    const voice = this.pickVoice(langCode);
+    if (voice) {
+      u.voice = voice;
+      u.lang = voice.lang;
+    }
+
+    u.onend = () => this.cleanup();
+    u.onerror = (e) => {
+      console.warn('TTS error', e);
+      this.cleanup();
+      if (e.error && e.error !== 'canceled' && e.error !== 'interrupted') {
+        showToast(t('Lỗi đọc văn bản', 'TTS error') + ': ' + e.error);
+      }
+    };
+
+    this.currentUtterance = u;
+    this.currentBtn = btn;
+    this.usingRV = false;
+    if (btn) btn.classList.add('speaking');
+
+    try {
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    } catch(e) {
+      this.cleanup();
+      showToast(t('Không thể đọc', 'Could not speak'));
+    }
+  },
+
+  speak(text, btn) {
+    if (!isTTSSupported() && !this.isResponsiveVoiceReady()) {
+      showToast(t('Trình duyệt không hỗ trợ đọc văn bản', 'Browser does not support TTS'));
+      return;
+    }
+    // If already speaking, stop first
+    if (this.isSpeaking()) {
+      this.stop();
+      // If user tapped the same button that is currently speaking, they want to stop. Done.
+      if (this.currentBtn === btn) return;
+    }
+    const cleaned = (text || '').trim();
+    if (!cleaned) return;
+
+    const langCode = state.settings.ttsLang || state.settings.speechLang || 'vi-VN';
+
+    // Use ResponsiveVoice for Vietnamese if available
+    if (langCode.toLowerCase().startsWith('vi') && this.isResponsiveVoiceReady()) {
+      this.speakVietnamese(cleaned, btn);
+    } else {
+      this.speakWebSpeech(cleaned, btn, langCode);
+    }
+  },
+
+  stop() {
+    // Stop both engines to be safe
+    if (typeof responsiveVoice !== 'undefined' && responsiveVoice.cancel) {
+      try { responsiveVoice.cancel(); } catch(e) {}
+    }
+    if (isTTSSupported()) {
+      try { speechSynthesis.cancel(); } catch(e) {}
+    }
+    this.cleanup();
+  },
+
+  cleanup() {
+    if (this.currentBtn) this.currentBtn.classList.remove('speaking');
+    this.currentBtn = null;
+    this.currentUtterance = null;
+    this.usingRV = false;
+  }
+};
+
+/* Voice list loads async on Android — register callback */
+function setupTTSVoices() {
+  if (!isTTSSupported()) return;
+  TTS.loadVoices();
+  if (typeof speechSynthesis.addEventListener === 'function') {
+    speechSynthesis.addEventListener('voiceschanged', () => TTS.loadVoices());
+  }
+  speechSynthesis.onvoiceschanged = () => TTS.loadVoices();
+}
+
+/* Render the voice dropdown in Settings */
+function renderTTSVoiceSelect() {
+  const sel = document.getElementById('tts-voice-select');
+  if (!sel) return;
+  const langCode = state.settings.ttsLang || 'vi-VN';
+  const candidates = TTS.voicesForLang(langCode);
+  const currentName = state.settings.ttsVoiceName || '';
+
+  // Build options
+  let html = `<option value="">${t('Tự động chọn (ưu tiên giọng nữ)','Auto (prefer female)')}</option>`;
+  candidates.forEach(v => {
+    const isFemale = TTS.isLikelyFemale(v);
+    const tag = isFemale === true ? ' ♀' : isFemale === false ? ' ♂' : '';
+    const sel = v.name === currentName ? 'selected' : '';
+    html += `<option value="${escapeHTML(v.name)}" ${sel}>${escapeHTML(v.name)}${tag}</option>`;
+  });
+  if (!candidates.length) {
+    html = `<option value="">${t('Không có giọng cho ngôn ngữ này — tải gói TTS','No voices for this language — install TTS pack')}</option>`;
+  }
+  sel.innerHTML = html;
+}
+
+/* TTS language label list */
+const TTS_LANGS = [
+  { code: 'vi-VN', label: 'VI', vi: 'Tiếng Việt',  en: 'Vietnamese' },
+  { code: 'en-US', label: 'EN', vi: 'Tiếng Anh',   en: 'English' },
+  { code: 'ko-KR', label: 'KO', vi: 'Tiếng Hàn',   en: 'Korean' },
+  { code: 'zh-CN', label: 'ZH', vi: 'Tiếng Trung', en: 'Chinese' }
+];
+
+function currentTTSLangLabel() {
+  const code = state.settings.ttsLang || 'vi-VN';
+  const lang = TTS_LANGS.find(l => l.code === code) || TTS_LANGS[0];
+  return lang.label;
+}
+
+/* Build the speaker + language controls HTML for a card.
+   Pass itemId + kind ('note' | 'issue'). */
+function ttsButtonHTML(itemId, kind) {
+  if (!isTTSSupported()) return '';
+  const currentCode = state.settings.ttsLang || 'vi-VN';
+  const langOptions = TTS_LANGS.map(l =>
+    `<button type="button" data-tts-set-lang="${l.code}" class="${l.code === currentCode ? 'active' : ''}">${l[state.lang]} (${l.label})</button>`
+  ).join('');
+  return `<div class="tts-controls">
+    <button type="button" class="tts-lang" data-tts-lang-btn aria-label="${t('Chọn ngôn ngữ','Pick language')}">${currentTTSLangLabel()}</button>
+    <button type="button" class="tts-btn" data-tts="${kind}:${itemId}" aria-label="${t('Đọc','Read aloud')}" title="${t('Đọc','Read aloud')}">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 5.5h2L7 3v8L4 8.5H2z" fill="currentColor" stroke="none"/>
+        <path d="M9.5 5a2.5 2.5 0 0 1 0 4"/>
+        <path d="M11 3.5a4.5 4.5 0 0 1 0 7"/>
+      </svg>
+    </button>
+    <div class="tts-lang-popover">${langOptions}</div>
+  </div>`;
+}
+
+/* Wire all TTS controls in a container element (call after rendering). */
+function wireTTSButtons(containerEl) {
+  if (!isTTSSupported() || !containerEl) return;
+
+  // Speaker buttons
+  containerEl.querySelectorAll('[data-tts]').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      closeAllTTSPopovers();
+      const [kind, id] = btn.dataset.tts.split(':');
+      let item = null;
+      if (kind === 'note') item = state.notes.find(x => x.id === id);
+      else if (kind === 'issue') item = state.issues.find(x => x.id === id);
+      if (!item) return;
+      const text = [item.title, item.desc].filter(Boolean).join('. ');
+      TTS.speak(text, btn);
+    };
+  });
+
+  // Language chip buttons (toggle popover)
+  containerEl.querySelectorAll('[data-tts-lang-btn]').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const popover = btn.parentElement.querySelector('.tts-lang-popover');
+      if (!popover) return;
+      const isOpen = popover.classList.contains('open');
+      closeAllTTSPopovers();
+      if (!isOpen) {
+        popover.classList.add('open');
+        btn.classList.add('open');
+      }
+    };
+  });
+
+  // Language picker items
+  containerEl.querySelectorAll('[data-tts-set-lang]').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const code = btn.dataset.ttsSetLang;
+      state.settings.ttsLang = code;
+      state.settings.ttsVoiceName = '';  // reset voice on language change
+      save();
+      // Update Settings select if present
+      const sel = document.getElementById('tts-lang-select');
+      if (sel) sel.value = code;
+      // Refresh voice picker
+      if (typeof renderTTSVoiceSelect === 'function') renderTTSVoiceSelect();
+      // Refresh VN gender row visibility
+      const vnRow = document.getElementById('tts-vn-gender-row');
+      if (vnRow) {
+        const isVn = code.toLowerCase().startsWith('vi');
+        vnRow.style.display = isVn ? '' : 'none';
+      }
+      // Update all TTS lang chips
+      document.querySelectorAll('.tts-lang').forEach(c => c.textContent = currentTTSLangLabel());
+      // Update active highlight in all popovers
+      document.querySelectorAll('.tts-lang-popover').forEach(pop => {
+        pop.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b.dataset.ttsSetLang === code);
+        });
+      });
+      closeAllTTSPopovers();
+      showToast(t('Đã đổi ngôn ngữ đọc','Speech language changed'));
+    };
+  });
+}
+
+function closeAllTTSPopovers() {
+  document.querySelectorAll('.tts-lang-popover.open').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.tts-lang.open').forEach(b => b.classList.remove('open'));
+}
+document.addEventListener('click', closeAllTTSPopovers);
+
+/* ============================================================
    INIT
 ============================================================ */
 setupFilterChips();
@@ -3367,14 +3989,23 @@ updateFilterChips();
 applyLang();
 renderAll();
 attachMicToAllFields();
+setupTTSVoices();
+setupTTSSettings();
 
 /* Service worker for offline */
 if ('serviceWorker' in navigator) {
   const swCode = `
     const CACHE = 'tk-v1';
+    const BYPASS_HOSTS = ['responsivevoice.org', 'code.responsivevoice.org'];
     self.addEventListener('install', e => self.skipWaiting());
     self.addEventListener('activate', e => self.clients.claim());
     self.addEventListener('fetch', e => {
+      const url = new URL(e.request.url);
+      // Always bypass cache for ResponsiveVoice — it fetches dynamic audio
+      if (BYPASS_HOSTS.some(h => url.hostname.includes(h))) {
+        e.respondWith(fetch(e.request).catch(() => new Response('', {status: 503})));
+        return;
+      }
       e.respondWith(
         caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
           if (e.request.method === 'GET' && resp.status === 200) {
@@ -3391,6 +4022,5 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register(swUrl).catch(()=>{});
 }
 </script>
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=UFFP2NRa"></script>
 </body>
 </html>
