@@ -1142,6 +1142,41 @@ main {
   gap: 4px;
   z-index: 1;
 }
+
+/* Issue header row: status badge + TTS controls aligned on one line above title */
+.issue-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.issue-header-row .tts-controls {
+  /* Inline, not absolute, when inside the header row */
+  position: static;
+  top: auto;
+  right: auto;
+}
+
+/* Note header row: tick + priority badge + (spacer) + TTS controls on one line */
+.note-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.note-header-row .note-tick {
+  margin-top: 0;  /* override the offset from .note-checkbox layout */
+  flex-shrink: 0;
+}
+.note-header-spacer {
+  flex: 1;
+}
+.note-header-row .tts-controls {
+  position: static;
+  top: auto;
+  right: auto;
+}
 .tts-btn {
   width: 30px;
   height: 30px;
@@ -2303,33 +2338,31 @@ function renderNotes() {
     const prio = n.priority || 'q2';
     const prioLabel = (PRIO_LABELS[prio] || PRIO_LABELS.q2)[state.lang];
     const card = document.createElement('div');
-    card.className = 'card' + (n.desc ? ' has-tts' : '');
+    card.className = 'card';  // no longer needs has-tts; new layout puts controls in own row
+    const showTTS = !!n.desc;
     card.innerHTML = `
-      ${n.desc ? ttsButtonHTML(n.id, 'note') : ''}
-      <div class="note-checkbox">
+      <div class="note-header-row">
         <button class="note-tick ${n.doneAt ? 'done' : ''}" data-toggle-done="${n.id}" aria-label="${t('Đánh dấu','Toggle')}"></button>
-        <div style="flex:1;min-width:0;">
-          <div class="card-title ${n.doneAt ? 'note-title-done' : ''}" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            ${n.pinned ? '<span class="pin-icon" title="pinned">📌</span>' : ''}
-            <span>${escapeHTML(n.title)}</span>
-          </div>
-          ${n.desc ? `<div class="card-desc ${n.doneAt ? 'note-title-done' : ''}">${escapeHTML(n.desc)}</div>` : ''}
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;">
-            <span class="priority-badge prio-${prio}">${prioLabel}</span>
-          </div>
-          <div class="card-meta" style="margin-top:8px;">
-            ${t('Tạo','Created')}: ${fmtDate(n.createdAt)}
-            ${n.updatedAt && n.updatedAt !== n.createdAt ? ` · ${t('Sửa','Updated')}: ${fmtDate(n.updatedAt)}` : ''}
-            ${n.doneAt ? ` · ${t('Xong','Done')}: ${fmtDate(n.doneAt)}` : ''}
-          </div>
-          <div class="card-actions">
-            <button class="btn btn-ghost btn-small" data-pin-nt="${n.id}">
-              ${n.pinned ? '📌 ' + t('Bỏ ghim','Unpin') : '📌 ' + t('Ghim','Pin')}
-            </button>
-            <button class="btn btn-ghost btn-small" data-edit-nt="${n.id}">${t('Sửa','Edit')}</button>
-            <button class="btn btn-danger btn-small" data-del-nt="${n.id}">${t('Xoá','Delete')}</button>
-          </div>
-        </div>
+        <span class="priority-badge prio-${prio}">${prioLabel}</span>
+        <div class="note-header-spacer"></div>
+        ${showTTS ? ttsButtonHTML(n.id, 'note') : ''}
+      </div>
+      <div class="card-title ${n.doneAt ? 'note-title-done' : ''}" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        ${n.pinned ? '<span class="pin-icon" title="pinned">📌</span>' : ''}
+        <span>${escapeHTML(n.title)}</span>
+      </div>
+      ${n.desc ? `<div class="card-desc ${n.doneAt ? 'note-title-done' : ''}">${escapeHTML(n.desc)}</div>` : ''}
+      <div class="card-meta" style="margin-top:8px;">
+        ${t('Tạo','Created')}: ${fmtDate(n.createdAt)}
+        ${n.updatedAt && n.updatedAt !== n.createdAt ? ` · ${t('Sửa','Updated')}: ${fmtDate(n.updatedAt)}` : ''}
+        ${n.doneAt ? ` · ${t('Xong','Done')}: ${fmtDate(n.doneAt)}` : ''}
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-ghost btn-small" data-pin-nt="${n.id}">
+          ${n.pinned ? '📌 ' + t('Bỏ ghim','Unpin') : '📌 ' + t('Ghim','Pin')}
+        </button>
+        <button class="btn btn-ghost btn-small" data-edit-nt="${n.id}">${t('Sửa','Edit')}</button>
+        <button class="btn btn-danger btn-small" data-del-nt="${n.id}">${t('Xoá','Delete')}</button>
       </div>
     `;
     el.appendChild(card);
@@ -2422,24 +2455,23 @@ function renderIssues(targetId='issues-list', limit=null) {
     const now = Date.now();
     const elapsed = (i.doneAt || now) - i.createdAt;
     const card = document.createElement('div');
-    card.className = 'card' + (i.desc ? ' has-tts' : '');
+    card.className = 'card';  // no longer needs has-tts since layout is different now
+    const showTTS = i.desc && targetId === 'issues-list';
     card.innerHTML = `
-      ${i.desc && targetId === 'issues-list' ? ttsButtonHTML(i.id, 'issue') : ''}
-      <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
-        <div style="flex:1;">
-          <div class="card-title">${escapeHTML(i.title)}</div>
-          ${i.desc ? `<div class="card-desc">${escapeHTML(i.desc)}</div>` : ''}
-          <div class="card-meta">
-            ${t('Tạo','Created')}: ${fmtDate(i.createdAt)}
-            ${i.doneAt ? ` · ${t('Xong','Done')}: ${fmtDate(i.doneAt)}` : ''}
-          </div>
-          <div class="card-meta" style="font-size:14px;">
-            ${i.doneAt
-              ? t('Hoàn thành sau','Completed in') + ' ' + durationLabel(elapsed)
-              : t('Đã trôi qua','Elapsed') + ' ' + durationLabel(elapsed)}
-          </div>
-        </div>
+      <div class="issue-header-row">
         <span class="status-tag ${i.doneAt ? 'status-done':'status-open'}">${i.doneAt ? t('Xong','Done') : t('Đang sửa','Mending')}</span>
+        ${showTTS ? ttsButtonHTML(i.id, 'issue') : ''}
+      </div>
+      <div class="card-title">${escapeHTML(i.title)}</div>
+      ${i.desc ? `<div class="card-desc">${escapeHTML(i.desc)}</div>` : ''}
+      <div class="card-meta">
+        ${t('Tạo','Created')}: ${fmtDate(i.createdAt)}
+        ${i.doneAt ? ` · ${t('Xong','Done')}: ${fmtDate(i.doneAt)}` : ''}
+      </div>
+      <div class="card-meta" style="font-size:14px;">
+        ${i.doneAt
+          ? t('Hoàn thành sau','Completed in') + ' ' + durationLabel(elapsed)
+          : t('Đã trôi qua','Elapsed') + ' ' + durationLabel(elapsed)}
       </div>
       ${targetId === 'issues-list' ? `
       <div class="card-actions">
