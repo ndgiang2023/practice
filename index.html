@@ -472,9 +472,7 @@ main {
 .daily-log-row {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--line);
+  margin-top: 8px;
 }
 .daily-log-row input {
   flex: 1;
@@ -485,6 +483,73 @@ main {
   border: 1px solid var(--line);
   border-radius: 2px;
   outline: none;
+}
+
+.today-status {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.today-status b {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 600;
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-style: italic;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0 2px;
+  letter-spacing: 0.3px;
+}
+.link-btn:active { color: var(--vermillion); }
+
+/* ============ VERSION INFO ============ */
+.version-info {
+  background: linear-gradient(180deg, rgba(160,124,58,0.04), rgba(160,124,58,0.02));
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 2px;
+  padding: 10px 14px;
+}
+.version-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(196,181,154,0.4);
+}
+.version-row:last-child { border-bottom: none; }
+.version-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--ink-faint);
+}
+.version-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+  text-align: right;
+}
+#version-num {
+  color: var(--vermillion);
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 /* settings */
@@ -1543,6 +1608,24 @@ main {
   </div>
   <div id="app-version-info" style="margin-top:10px;font-size:12px;color:var(--ink-faint);font-style:italic;"></div>
 
+  <div class="divider-deco">· ◇ ·</div>
+
+  <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:6px;" data-vi="Thông tin" data-en="About">Thông tin</h3>
+  <div class="version-info">
+    <div class="version-row">
+      <span class="version-label" data-vi="Phiên bản" data-en="Version">Phiên bản</span>
+      <span class="version-value" id="version-num">2.0</span>
+    </div>
+    <div class="version-row">
+      <span class="version-label" data-vi="Tên" data-en="Name">Tên</span>
+      <span class="version-value">Thực Hành · Practice Companion</span>
+    </div>
+    <div class="version-row">
+      <span class="version-label" data-vi="Tác giả" data-en="Author">Tác giả</span>
+      <span class="version-value">ndgiang</span>
+    </div>
+  </div>
+
   <div style="margin-top:30px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--ink-faint);font-size:13px;">
     <div style="font-size:20px;color:var(--gold-soft);margin-bottom:4px;">∾</div>
     <span data-vi="Tinh tấn không ngừng" data-en="Diligence without ceasing">Tinh tấn không ngừng</span>
@@ -1734,6 +1817,7 @@ main {
    STATE
 ============================================================ */
 const STORAGE_KEY = 'thoiKhoa_v1';
+const APP_VERSION = '2.0';
 const defaultUnits = {
   vi: ['giờ','phút','biến','lạy','trang','lần'],
   en: ['hours','minutes','repetitions','prostrations','pages','times']
@@ -2221,7 +2305,7 @@ function renderPractices(targetId='practices-list', limit=null) {
     const recent = Object.entries(p.log)
       .sort((a,b) => b[0].localeCompare(a[0]))
       .slice(0, 5)
-      .map(([d, v]) => `<span>${d.slice(5)}: ${v}</span>`)
+      .map(([d, v]) => `<span>${d.slice(5)}: ${formatNum(v)}</span>`)
       .join('');
     const card = document.createElement('div');
     card.className = 'card';
@@ -2237,9 +2321,13 @@ function renderPractices(targetId='practices-list', limit=null) {
         </div>
       </div>
       ${targetId === 'practices-list' ? `
+      <div class="today-status">
+        ${t('Hôm nay đã ghi','Today logged')}: <b>${formatNum(todayAmount)}</b> ${p.unit}
+        ${todayAmount > 0 ? `<button class="link-btn" data-fix="${p.id}" title="${t('Sửa số hôm nay','Fix today value')}">${t('sửa','fix')}</button>` : ''}
+      </div>
       <div class="daily-log-row">
-        <input type="number" min="0" step="0.1" id="log-${p.id}" placeholder="${t('hôm nay','today')}…" value="${todayAmount || ''}">
-        <button class="btn btn-small" data-log="${p.id}">${t('Ghi','Log')}</button>
+        <input type="number" min="0" step="0.1" id="log-${p.id}" placeholder="${t('Thêm số đã làm…','Add amount…')}" value="">
+        <button class="btn btn-small" data-log="${p.id}">+ ${t('Ghi thêm','Add')}</button>
       </div>
       ${recent ? `<div class="history-mini">${recent}</div>` : ''}
       <div class="card-actions">
@@ -2255,11 +2343,41 @@ function renderPractices(targetId='practices-list', limit=null) {
     b.onclick = () => {
       const id = b.dataset.log;
       const p = state.practices.find(x => x.id === id);
-      const v = parseFloat(document.getElementById('log-'+id).value);
-      if (isNaN(v) || v < 0) return;
-      p.log[todayStr()] = v;
+      const input = document.getElementById('log-'+id);
+      const v = parseFloat(input.value);
+      if (isNaN(v) || v <= 0) {
+        showToast(t('Vui lòng nhập số dương','Enter a positive number'));
+        return;
+      }
+      const today = todayStr();
+      const prev = p.log[today] || 0;
+      p.log[today] = prev + v;
       save(); renderAll();
-      showToast(t('Đã ghi nhận','Logged'));
+      showToast(t('Đã cộng thêm ','Added ') + formatNum(v) + ' ' + p.unit);
+    });
+  el.querySelectorAll('[data-fix]').forEach(b =>
+    b.onclick = () => {
+      const id = b.dataset.fix;
+      const p = state.practices.find(x => x.id === id);
+      const today = todayStr();
+      const cur = p.log[today] || 0;
+      const input = prompt(
+        t('Đặt lại số đã làm hôm nay (sẽ ghi đè giá trị hiện tại): ','Set today\'s value (overwrites current): ') + formatNum(cur),
+        formatNum(cur)
+      );
+      if (input === null) return;  // cancelled
+      const v = parseFloat(input);
+      if (isNaN(v) || v < 0) {
+        showToast(t('Số không hợp lệ','Invalid number'));
+        return;
+      }
+      if (v === 0) {
+        delete p.log[today];
+      } else {
+        p.log[today] = v;
+      }
+      save(); renderAll();
+      showToast(t('Đã cập nhật hôm nay','Today value updated'));
     });
   el.querySelectorAll('[data-edit-pr]').forEach(b =>
     b.onclick = () => openModal('modal-practice', b.dataset.editPr));
@@ -3323,10 +3441,14 @@ document.getElementById('hard-refresh-app').onclick = async () => {
 // Show last loaded timestamp so user knows if reload worked
 (function showVersionInfo() {
   const el = document.getElementById('app-version-info');
-  if (!el) return;
-  const now = new Date();
-  const stamp = now.toLocaleString(state.lang === 'vi' ? 'vi-VN' : 'en-US');
-  el.textContent = t('Đã tải lúc: ', 'Loaded at: ') + stamp;
+  if (el) {
+    const now = new Date();
+    const stamp = now.toLocaleString(state.lang === 'vi' ? 'vi-VN' : 'en-US');
+    el.textContent = t('Đã tải lúc: ', 'Loaded at: ') + stamp;
+  }
+  // Also sync the version number element with the constant
+  const vEl = document.getElementById('version-num');
+  if (vEl) vEl.textContent = APP_VERSION;
 })();
 
 /* ============================================================
