@@ -1614,7 +1614,7 @@ main {
   <div class="version-info">
     <div class="version-row">
       <span class="version-label" data-vi="Phiên bản" data-en="Version">Phiên bản</span>
-      <span class="version-value" id="version-num">2.0</span>
+      <span class="version-value" id="version-num">2.1</span>
     </div>
     <div class="version-row">
       <span class="version-label" data-vi="Tên" data-en="Name">Tên</span>
@@ -1817,7 +1817,7 @@ main {
    STATE
 ============================================================ */
 const STORAGE_KEY = 'thoiKhoa_v1';
-const APP_VERSION = '2.0';
+const APP_VERSION = '2.1';
 const defaultUnits = {
   vi: ['giờ','phút','biến','lạy','trang','lần'],
   en: ['hours','minutes','repetitions','prostrations','pages','times']
@@ -2573,8 +2573,9 @@ function renderIssues(targetId='issues-list', limit=null) {
     const now = Date.now();
     const elapsed = (i.doneAt || now) - i.createdAt;
     const card = document.createElement('div');
-    card.className = 'card';  // no longer needs has-tts since layout is different now
-    const showTTS = i.desc && targetId === 'issues-list';
+    card.className = 'card';
+    // TTS button shows whenever the issue has a description, including on the dashboard
+    const showTTS = !!i.desc;
     card.innerHTML = `
       <div class="issue-header-row">
         <span class="status-tag ${i.doneAt ? 'status-done':'status-open'}">${i.doneAt ? t('Xong','Done') : t('Đang sửa','Mending')}</span>
